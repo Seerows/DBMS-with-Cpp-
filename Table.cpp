@@ -4,7 +4,7 @@ Table::Table(pair<string, vector<pair<string, string>>> query) {
 	metadata = query;
 	counter = 0;
 
-	BaseColumn* curr;
+	Base_Column* curr;
 
 	for (int i = 0; i < query.second.size(); i++) {
 		string type = query.second.at(i).first;
@@ -74,48 +74,24 @@ void Table::display() {
 	current = col_head;
 }
 
-template <class T>
-bool Table::addRow(T data) {
+void Table::connect() {
 
-	if (!strcmp(metadata.second.at(counter).first.c_str(), typeid(T).name())) {
-		current->insertAtTail(data);
+	Base_Column* curr_col = col_head;
+
+	while (curr_col->next_col != NULL) {
+		curr_col->getHead();
 	}
-	else {
-		cout << "nah\n";
-	}
-
-
-	current = col_head;
-	counter = 0;
-
-	return false;
-}
-
-template <class T, class... Args>
-bool Table::addRow(T data, Args... args) {
-
-
-	if (!strcmp(metadata.second.at(counter).first.c_str(), typeid(T).name())) {
-		current->insertAtTail(data);
-		current = current->next_col;
-	}
-	else {
-		cout << "nah1\n";
-	}
-
-	counter++;
-	
-	return addRow(args...);
 
 }
 
-template bool Table::addRow<int>(int);
-template bool Table::addRow<char>(char);
-template bool Table::addRow<string>(string);
-template bool Table::addRow<float>(float);
-template bool Table::addRow<bool>(bool);
 
-template bool Table::addRow<int, int>(int, int);
-template bool Table::addRow<int, string>(int, string);
-template bool Table::addRow<string, int>(string, int);
-template bool Table::addRow<string, string>(string, string);
+//template bool Table::addRow<int>(int);
+//template bool Table::addRow<char>(char);
+//template bool Table::addRow<string>(string);
+//template bool Table::addRow<float>(float);
+//template bool Table::addRow<bool>(bool);
+//
+//template bool Table::addRow<int, int>(int, int);
+//template bool Table::addRow<int, string>(int, string);
+//template bool Table::addRow<string, int>(string, int);
+//template bool Table::addRow<string, string>(string, string);

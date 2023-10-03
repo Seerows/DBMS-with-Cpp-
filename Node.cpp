@@ -3,7 +3,8 @@
 template <class T>
 Node<T>::Node(T data) {
     this->data = data;
-    next = NULL;
+    down = NULL;
+    right = NULL;
 }
 
 template class Node<int>;

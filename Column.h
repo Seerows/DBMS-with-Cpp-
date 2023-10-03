@@ -1,12 +1,12 @@
 #pragma once
 #include <iostream>
-#include <BaseColumn.h>
+#include <Base_Column.h>
 #include <Node.h>
 
 using namespace std;
 
 template <class T>
-class Column : public BaseColumn {
+class Column : public Base_Column {
 
 public:
     Node<T>* head;
@@ -14,8 +14,10 @@ public:
     Column<T>(string name);
     void insertAtTail(T data);
 
-    void display();
+    //stuck here
+    Node<int>* getHead();
 
+    void display();
 
 };
 

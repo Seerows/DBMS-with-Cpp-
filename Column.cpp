@@ -13,7 +13,7 @@ void Column<T>::display() {
 
     while (current != NULL) {
         cout << current->data << "\t";
-        current = current->next;
+        current = current->down;
     }
 
 }
@@ -27,13 +27,18 @@ void Column<T>::insertAtTail(T data) {
     else {
         Node<T>* current = head;
 
-        while (current->next != NULL) {
-            current = current->next;
+        while (current->down != NULL) {
+            current = current->down;
         }
 
-        current->next = new Node<T>(data);
+        current->down = new Node<T>(data);
     }
 
+}
+
+template <class T>
+Node<T>* getHead() {
+    return head;
 }
 
 template class Column<int>;

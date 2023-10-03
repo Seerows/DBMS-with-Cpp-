@@ -12,12 +12,13 @@ int main() {
 	query.first = "Table1";
 	query.second.push_back(pair<string, string>("int", "ID"));
 	query.second.push_back(pair<string, string>("class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >", "Name"));
+	query.second.push_back(pair<string, string>("char", "Grade"));
 
 	Table table(query);
 
-	table.addRow(5, string("Row1"));
-	table.addRow(6, string("Row2"));
-	table.addRow(1, string("Row3"));
+	table.addRow(5, string("Row1"), 'A');
+	table.addRow(6, string("Row2"), 'C');
+	table.addRow(1, string("Row3"), 'D');
 
 	table.display();
 
