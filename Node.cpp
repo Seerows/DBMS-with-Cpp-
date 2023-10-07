@@ -4,7 +4,43 @@ template <class T>
 Node<T>::Node(T data) {
     this->data = data;
     down = NULL;
-    right = NULL;
+    right = left = NULL;
+}
+
+template <class T>
+Node<T>* Node<T>::getDown() {
+    return down;
+}
+
+string Node<int>::getValue() {
+    return to_string(data);
+}
+
+string Node<float>::getValue() {
+    return to_string(data);
+}
+
+string Node<char>::getValue() {
+    return string(1, data);
+}
+
+string Node<string>::getValue() {
+    return data;
+}
+
+string Node<bool>::getValue() {
+    if (data == false) {
+        return string("false");
+    }
+    else {
+        return string("true");
+    }
+}
+
+
+template <class T>
+void Node<T>::setValue(T val) {
+    data = val;
 }
 
 template class Node<int>;

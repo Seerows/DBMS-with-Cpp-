@@ -2,13 +2,14 @@
 
 Table::Table(pair<string, vector<pair<string, string>>> query) {
 	metadata = query;
-	counter = 0;
+	counter = num_of_cols = num_of_rows = 0;
 
 	Base_Column* curr;
 
 	for (int i = 0; i < query.second.size(); i++) {
 		string type = query.second.at(i).first;
 		curr = col_head;
+		num_of_cols++;
 
 		if (i == 0) {
 
@@ -63,15 +64,34 @@ Table::Table(pair<string, vector<pair<string, string>>> query) {
 
 void Table::display() {
 
-	current = col_head;
+	for (int i = 0; i < num_of_rows; i++) {
+		Base_Column* curr_col = col_head;
 
-	while (current != NULL) {
-		current->display();
+		while (curr_col != NULL) {
+
+			cout << (*curr_col)[i].getValue();
+
+			/*if (Column<int>* col = dynamic_cast<Column<int>*>(curr_col)) {
+				cout << (*col)[i].getValue();
+			}
+			else if (Column<float>* col = dynamic_cast<Column<float>*>(curr_col)) {
+				cout << (*col)[i].getValue();
+			}
+			else if (Column<char>* col = dynamic_cast<Column<char>*>(curr_col)) {
+				cout << (*col)[i].getValue();
+			}
+			else if (Column<string>* col = dynamic_cast<Column<string>*>(curr_col)) {
+				cout << (*col)[i].getValue();
+			}
+			else if (Column<bool>* col = dynamic_cast<Column<bool>*>(curr_col)) {
+				cout << (*col)[i].getValue();
+			}*/
+			cout << "\t";
+			curr_col = curr_col->next_col;
+		}
 		cout << endl;
-		current = current->next_col;
 	}
-
-	current = col_head;
+	cout << endl;
 }
 
 void Table::connect() {
@@ -79,11 +99,55 @@ void Table::connect() {
 	Base_Column* curr_col = col_head;
 
 	while (curr_col->next_col != NULL) {
-		curr_col->getHead();
+		Base_Node* node = curr_col->getTail();
+		Base_Node* next_node = curr_col->next_col->getTail();
+
+		node->right = next_node;
+		next_node->left = node;
+
+		curr_col = curr_col->next_col;
 	}
 
 }
 
+
+Base_Column& Table::operator[](string label) {
+
+	Base_Column* curr_col = col_head;
+
+	while (curr_col != NULL) {
+
+		if (curr_col->label == label) {
+			return *curr_col;
+			/*if (Column<int>* col = dynamic_cast<Column<int>*>(curr_col)) {
+				return (*col);
+			}*/
+			/*else if (Column<float>* col = dynamic_cast<Column<float>*>(curr_col)) {
+				return (*col);
+			}
+			else if (Column<char>* col = dynamic_cast<Column<char>*>(curr_col)) {
+				return (*col);
+			}
+			else if (Column<string>* col = dynamic_cast<Column<string>*>(curr_col)) {
+				return (*col);
+			}
+			else if (Column<bool>* col = dynamic_cast<Column<bool>*>(curr_col)) {
+				return (*col);
+			}*/
+		}
+
+		curr_col = curr_col->next_col;
+	}
+
+	cout << "Column not found." << endl;
+	return *curr_col;
+}
+
+//template Column<int>& Table::operator[]<int>(string label);
+//template Column<float>& Table::operator[]<float>(string label);
+//template Column<char>& Table::operator[]<char>(string label);
+//template Column<string>& Table::operator[]<string>(string label);
+//template Column<bool>& Table::operator[]<bool>(string label);
 
 //template bool Table::addRow<int>(int);
 //template bool Table::addRow<char>(char);

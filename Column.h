@@ -10,13 +10,17 @@ class Column : public Base_Column {
 
 public:
     Node<T>* head;
+    Node<T>* tail;
 
     Column<T>(string name);
+
     void insertAtTail(T data);
 
     //stuck here
-    Node<int>* getHead();
+    Node<T>* getHead();
+    Node<T>* getTail();
 
+    Base_Node& operator[](int index);
     void display();
 
 };

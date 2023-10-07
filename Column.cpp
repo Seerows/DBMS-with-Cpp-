@@ -3,11 +3,14 @@
 template <class T>
 Column<T>::Column(string name) {
     label = name;
-    head = NULL;
+    head = tail = NULL;
 }
 
 template <class T>
 void Column<T>::display() {
+
+    //Base_Node* current = head;
+
 
     Node<T>* current = head;
 
@@ -16,13 +19,15 @@ void Column<T>::display() {
         current = current->down;
     }
 
+    cout << endl;
+
 }
 
 template <class T>
 void Column<T>::insertAtTail(T data) {
 
     if (head == NULL) {
-        head = new Node<T>(data);
+        head = tail = new Node<T>(data);
     }
     else {
         Node<T>* current = head;
@@ -31,14 +36,33 @@ void Column<T>::insertAtTail(T data) {
             current = current->down;
         }
 
-        current->down = new Node<T>(data);
+        current->down = tail = new Node<T>(data);
     }
 
 }
 
 template <class T>
-Node<T>* getHead() {
+Node<T>* Column<T>::getHead() {
     return head;
+}
+
+template <class T>
+Node<T>* Column<T>::getTail() {
+    return tail;
+}
+
+
+template <class T>
+Base_Node& Column<T>::operator[](int index) {
+
+    int count = 0;
+    Node<T>* current = head;
+        
+    while (count++ < index && current->down != NULL) {
+        current = current->down;
+    }
+    
+    return *(current);
 }
 
 template class Column<int>;

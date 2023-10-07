@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <any>
 
 #include <Column.h>
 
@@ -11,6 +12,7 @@ class Table {
 
 public:
 	int counter;
+	int num_of_cols, num_of_rows;
 	Base_Column* current;
 
 	string label;
@@ -20,16 +22,14 @@ public:
 
 	Table(pair<string, vector<pair<string, string>>> query);
 
+
 	void display();
 
 	void connect();
 
-	/*template <class T, class... Args>
-	bool addRow(T data, Args... args);
+	void operator[](int index);
 
-	template <class T>
-	bool addRow(T data);*/
-
+	Base_Column& operator[](string label);
 
 	//implement backtracking?
 	template <class T>
@@ -44,10 +44,11 @@ public:
 
 		current = col_head;
 		counter = 0;
+		num_of_rows++;
 
 		connect();
 
-		return false;
+		return true;
 	}
 
 	template <class T, class... Args>
@@ -63,7 +64,6 @@ public:
 		}
 
 		counter++;
-
 		return addRow(args...);
 
 	}

@@ -14,9 +14,10 @@ public:
 	Base_Column();
 	virtual void display() = 0;
 
-	//stuck here
-	virtual Node<int>* getHead();
-	virtual Node<string>* getHead();
+	virtual Base_Node& operator[](int index) = 0;
+
+	virtual Base_Node* getHead() = 0;
+	virtual Base_Node* getTail() = 0;
 
 	virtual void insertAtTail(int);
 	virtual void insertAtTail(string);
