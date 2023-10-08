@@ -27,9 +27,10 @@ public:
 
 	void connect();
 
-	void operator[](int index);
+	void addColumn(pair<string, string> query);
 
 	Base_Column& operator[](string label);
+	Base_Column& operator[](int pos);
 
 	//implement backtracking?
 	template <class T>

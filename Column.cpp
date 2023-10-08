@@ -53,7 +53,7 @@ Node<T>* Column<T>::getTail() {
 
 
 template <class T>
-Base_Node& Column<T>::operator[](int index) {
+Node<T>& Column<T>::operator[](int index) {
 
     int count = 0;
     Node<T>* current = head;

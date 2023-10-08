@@ -20,7 +20,7 @@ public:
     Node<T>* getHead();
     Node<T>* getTail();
 
-    Base_Node& operator[](int index);
+    Node<T>& operator[](int index);
     void display();
 
 };

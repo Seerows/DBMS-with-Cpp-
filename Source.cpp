@@ -22,8 +22,20 @@ int main() {
 	table.addRow(4, string("Row4"), 'E');
 	table.addRow(7, string("Row5"), 'F');
 
+	table.addColumn(pair<string, string>("bool", "Employed"));
+	table.addColumn(pair<string, string>("class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >", "Salary"));
 	
 	table.display();
+	
+	cout << endl;
+
+	for (int i = 0; i < table.num_of_rows; i++) {
+		for (int j = 0; j < table.num_of_cols; j++) {
+			cout << table[j][i].getValue() << "\t";
+		}
+		cout << endl;
+	}
+	cout << endl;
 
 	Base_Node* temp = table.col_head->getHead()->getDown();
 	while (temp != NULL) {
@@ -36,7 +48,3 @@ int main() {
 	cout << table["Name"][3].getValue();
 
 }
-
-//use union that has all 5 datatypes along with an extra string variable that contains the data type.
-//Then implement a getData() function to retrieve the data.
-//U can also implement a LinkedList for this union to be used for rows.

@@ -68,9 +68,7 @@ void Table::display() {
 		Base_Column* curr_col = col_head;
 
 		while (curr_col != NULL) {
-
-			cout << (*curr_col)[i].getValue();
-
+			cout << (*curr_col)[i].getValue();	//this line
 			/*if (Column<int>* col = dynamic_cast<Column<int>*>(curr_col)) {
 				cout << (*col)[i].getValue();
 			}
@@ -110,6 +108,67 @@ void Table::connect() {
 
 }
 
+void Table::addColumn(pair<string, string> query) {
+
+	//this function assumes that there is already atleast one column in the table.
+	string type = query.first;
+	string label = query.second;
+
+	Base_Column* curr = col_head;
+	
+	while (curr->next_col != NULL) {
+		curr = curr->next_col;
+	}
+
+	if (type == "float") {
+		curr->next_col = new Column<float>(label);
+
+		for (int i = 0; i < num_of_rows; i++) {
+			curr->next_col->insertAtTail(0.0f);
+		}
+	}
+	else if (type == "class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >") {
+		curr->next_col = new Column<string>(label);
+
+		for (int i = 0; i < num_of_rows; i++) {
+			curr->next_col->insertAtTail(string("NULL"));
+		}
+	}
+	else if (type == "char") {
+		curr->next_col = new Column<char>(label);
+
+		for (int i = 0; i < num_of_rows; i++) {
+			curr->next_col->insertAtTail('?');
+		}
+	}
+	else if (type == "bool") {
+		curr->next_col = new Column<bool>(label);
+
+		for (int i = 0; i < num_of_rows; i++) {
+			curr->next_col->insertAtTail(false);
+		}
+	}
+	else {			//for int case. Removing this gives an error.
+		curr->next_col = new Column<int>(label);
+		
+		for (int i = 0; i < num_of_rows; i++) {
+			curr->next_col->insertAtTail(0);
+		}
+	}
+
+	Base_Node* node = curr->getHead();
+	Base_Node* next_node = curr->next_col->getHead();
+
+	while (node != NULL && next_node != NULL) {
+		node->right = next_node;
+		next_node->left = node;
+
+		node = node->getDown();
+		next_node = next_node->getDown();
+	}
+
+	num_of_cols++;
+}
 
 Base_Column& Table::operator[](string label) {
 
@@ -141,6 +200,21 @@ Base_Column& Table::operator[](string label) {
 
 	cout << "Column not found." << endl;
 	return *curr_col;
+}
+
+Base_Column& Table::operator[](int pos) {
+
+	int count = 0;
+	Base_Column* curr_col = col_head;
+	while (count < pos && curr_col != NULL) {
+		count++;
+		curr_col = curr_col->next_col;
+	}
+
+	if (curr_col != NULL) {
+		return *curr_col;
+	}
+	
 }
 
 //template Column<int>& Table::operator[]<int>(string label);
