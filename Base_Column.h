@@ -30,6 +30,7 @@ public:
 	virtual void insertAtTail(bool);
 
 	virtual void insertAtTail(Base_Node*) = 0;
+	virtual void deleteAtTail() = 0;
 
 };
 

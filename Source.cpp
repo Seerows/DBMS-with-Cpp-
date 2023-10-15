@@ -19,8 +19,11 @@ int main() {
 
 	Table employees(query);
 
-	employees.addRow(5, string("Row1"), 'A', 2);
+	cout << "here1\n";
+	employees.addRow(5, string("Row1"), 4, 2);
+	cout << "here2\n";
 	employees.addRow(6, string("Row2"), 'C', 1);
+	cout << "here3\n";
 	employees.addRow(1, string("Row3"), 'D', 4);
 	employees.addRow(4, string("Row4"), 'E', 3);
 	employees.addRow(7, string("Row5"), 'F', 1);

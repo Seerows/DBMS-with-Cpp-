@@ -37,12 +37,16 @@ public:
 			current->insertAtTail(data);
 		}
 		else {
+			current = col_head;
+			counter = 0;
+
 			cout << "nah\n";
+			return false;
 		}
 
+		num_of_rows++;
 		current = col_head;
 		counter = 0;
-		num_of_rows++;
 
 		connect();
 
@@ -52,18 +56,26 @@ public:
 	template <class T, class... Args>
 	bool addRow(T data, Args... args) {
 
-
 		if (!strcmp(metadata.second.at(counter).first.c_str(), typeid(T).name())) {
-
+			cout << "ya1\n";
 			current->insertAtTail(data);
 			current = current->next_col;
+
+			counter++;
+			if (addRow(args...)) {
+				return true;
+			}
+
+			counter--;
+			current->deleteAtTail();
 		}
 		else {
 			cout << "nah1\n";
+			counter = 0;
 		}
 
-		counter++;
-		return addRow(args...);
+		current = col_head;
+		return false;
 
 	}
 

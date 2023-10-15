@@ -3,13 +3,18 @@
 template <class T>
 Node<T>::Node(T data) {
     this->data = data;
-    down = NULL;
+    down = up = NULL;
     right = left = NULL;
 }
 
 template <class T>
 Node<T>* Node<T>::getDown() {
     return down;
+}
+
+template <class T>
+Node<T>* Node<T>::getUp() {
+    return up;
 }
 
 template <class T>

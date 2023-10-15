@@ -30,6 +30,7 @@ void Column<T>::insertAtTail(Base_Node* node) {
         }
         else {
             tail->down = temp;
+            temp->up = tail;
             tail = tail->down;
         }
         num_of_rows++;
@@ -47,13 +48,10 @@ void Column<T>::insertAtTail(T data) {
         head = tail = new Node<T>(data);
     }
     else {
-        Node<T>* current = head;
-
-        while (current->down != NULL) {
-            current = current->down;
-        }
-
-        current->down = tail = new Node<T>(data);
+        Node<T>* temp = new Node<T>(data);
+        tail->down = temp;
+        temp->up = tail;
+        tail = tail->down;
     }
 
     num_of_rows++;
@@ -97,6 +95,24 @@ Column<T>* Column<T>::getCopy() {
 
     return copy;
 }
+
+template <class T>
+void Column<T>::deleteAtTail() {
+
+    if (head != NULL) {
+
+        Node<T>* del = tail;
+        tail = tail->up;
+
+        delete del;
+
+    }
+    else {
+        cout << "There are no elements in the Column<T> to be deleted." << endl;
+    }
+
+}
+
 
 template class Column<int>;
 template class Column<char>;

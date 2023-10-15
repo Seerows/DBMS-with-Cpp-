@@ -1,6 +1,5 @@
 #pragma once
 #include <iostream>
-#include <variant>
 using namespace std;
 
 class Base_Node{
@@ -10,6 +9,7 @@ public:
     Base_Node* right;
     Base_Node* left;
     virtual Base_Node* getDown() = 0;       //unneccessary?
+    virtual Base_Node* getUp() = 0;         //unneccessary?
 
     virtual string getValue() = 0;
     virtual Base_Node* getCopy() = 0;

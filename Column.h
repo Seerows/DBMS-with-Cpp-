@@ -17,6 +17,7 @@ public:
     Column<T>* getCopy(); 
     void insertAtTail(Base_Node* node);
     void insertAtTail(T data);
+    void deleteAtTail();
 
     Node<T>* getHead();
     Node<T>* getTail();

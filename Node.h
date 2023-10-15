@@ -11,22 +11,18 @@ class Node : public Base_Node {
 public:
     T data;
     Node<T>* down;
+    Node<T>* up;
 
     Node(T data);
 
     Node<T>* getCopy();
     Node<T>* getDown();
+    Node<T>* getUp();
 
     string getValue();
 
     void setValue(T val);
 
     bool operator==(Base_Node& node);
-    /*void setValue(int val);
-    void setValue(float val);
-    void setValue(char val);
-    void setValue(string val);
-    void setValue(bool val);*/
-
 };
 
