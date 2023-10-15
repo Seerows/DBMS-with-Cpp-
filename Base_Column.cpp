@@ -1,7 +1,8 @@
 #include "Base_Column.h"
 
 Base_Column::Base_Column() {
-	next_col = NULL;
+	next_col = prev_col = NULL;
+	num_of_rows = 0;
 }
 
 void Base_Column::display() {}

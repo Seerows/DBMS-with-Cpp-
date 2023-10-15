@@ -14,11 +14,14 @@ public:
 
     Node(T data);
 
+    Node<T>* getCopy();
     Node<T>* getDown();
 
     string getValue();
 
     void setValue(T val);
+
+    bool operator==(Base_Node& node);
     /*void setValue(int val);
     void setValue(float val);
     void setValue(char val);

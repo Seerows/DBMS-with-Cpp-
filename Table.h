@@ -2,7 +2,6 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <any>
 
 #include <Column.h>
 
@@ -20,22 +19,20 @@ public:
 
 	Base_Column* col_head;
 
+	Table(string label);
 	Table(pair<string, vector<pair<string, string>>> query);
-
-
-	void display();
-
-	void connect();
-
 	void addColumn(pair<string, string> query);
-
+	void addColumn(Base_Column* col);
 	Base_Column& operator[](string label);
 	Base_Column& operator[](int pos);
+	void display();
+	void connect();
+	Table* join(Base_Column* foreign, Base_Column* reference);
 
 	//implement backtracking?
 	template <class T>
 	bool addRow(T data) {
-
+		
 		if (!strcmp(metadata.second.at(counter).first.c_str(), typeid(T).name())) {
 			current->insertAtTail(data);
 		}
@@ -57,6 +54,7 @@ public:
 
 
 		if (!strcmp(metadata.second.at(counter).first.c_str(), typeid(T).name())) {
+
 			current->insertAtTail(data);
 			current = current->next_col;
 		}

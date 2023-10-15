@@ -12,11 +12,12 @@ public:
     Node<T>* head;
     Node<T>* tail;
 
-    Column<T>(string name);
+    Column<T>(string type, string name);
 
+    Column<T>* getCopy(); 
+    void insertAtTail(Base_Node* node);
     void insertAtTail(T data);
 
-    //stuck here
     Node<T>* getHead();
     Node<T>* getTail();
 

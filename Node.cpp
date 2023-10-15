@@ -12,6 +12,14 @@ Node<T>* Node<T>::getDown() {
     return down;
 }
 
+template <class T>
+Node<T>* Node<T>::getCopy() {
+
+    Node<T>* node = new Node<T>(data);
+    return node;
+
+}
+
 string Node<int>::getValue() {
     return to_string(data);
 }
@@ -41,6 +49,19 @@ string Node<bool>::getValue() {
 template <class T>
 void Node<T>::setValue(T val) {
     data = val;
+}
+
+
+template <class T>
+bool Node<T>::operator==(Base_Node& node) {
+
+    if (Node<T>* temp = &dynamic_cast<Node<T>&>(node)) {
+        if (temp->data == data) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 template class Node<int>;
