@@ -11,11 +11,13 @@ template <class T>
 class Node : public Base_Node {
 
 public:
+
+    Node(T data);
+    ~Node();
+
     T data;
     Node<T>* down;
     Node<T>* up;
-
-    Node(T data);
 
     Node<T>* getCopy();
     Node<T>* getDown();

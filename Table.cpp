@@ -26,7 +26,7 @@ Table::Table(pair<string, vector<pair<string, string>>> query) {
             if (type == "float") {
                 col_head = new Column<float>(type, query.second.at(i).second);
             }
-            else if (type == "string") {
+            else if (type == "class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >") {
                 col_head = new Column<string>(type, query.second.at(i).second);
             }
             else if (type == "char") {
@@ -124,7 +124,6 @@ void Table::connect() {
 
 void Table::addColumn(pair<string, string> query) {
 
-    //this function assumes that there is already atleast one column in the table.
     string type = query.first;
     string name = query.second;
 
@@ -293,8 +292,6 @@ Base_Column& Table::operator[](int pos) {
 
 Table* Table::join(Base_Column* foreign, Base_Column* reference) {
 
-    //return a temp table later
-    //addColumn() and pass a Base_Column into it
     Table* t1 = new Table(label);
     Base_Column* curr_col = col_head;
 
@@ -304,6 +301,52 @@ Table* Table::join(Base_Column* foreign, Base_Column* reference) {
         curr_col = curr_col->next_col;
     }
 
+    //for all the columns behind the reference column
+    curr_col = reference->prev_col;
+
+    while (curr_col != NULL) {
+        Base_Column* add;
+        Base_Node* foreign_node = foreign->getHead();
+
+        if (Column<float>* col = dynamic_cast<Column<float>*>(curr_col)) {
+            add = new Column<float>(curr_col->type, curr_col->label);
+        }
+        else if (Column<char>* col = dynamic_cast<Column<char>*>(curr_col)) {
+            add = new Column<char>(curr_col->type, curr_col->label);
+        }
+        else if (Column<string>* col = dynamic_cast<Column<string>*>(curr_col)) {
+            add = new Column<string>(curr_col->type, curr_col->label);
+        }
+        else if (Column<bool>* col = dynamic_cast<Column<bool>*>(curr_col)) {
+            add = new Column<bool>(curr_col->type, curr_col->label);
+        }
+        else {			//for int case, removing this gives an error.
+            add = new Column<int>(curr_col->type, curr_col->label);
+        }
+
+        while (foreign_node != NULL) {
+            Base_Node* reference_node = reference->getHead();
+            Base_Node* current_node = curr_col->getHead();
+
+            while (reference_node != NULL) {
+                if (*reference_node == *foreign_node) {
+                    add->insertAtTail(current_node->getCopy());
+                    break;
+                }
+
+                reference_node = reference_node->getDown();
+                current_node = current_node->getDown();
+            }
+
+
+            foreign_node = foreign_node->getDown();
+        }
+
+        t1->addColumn(add);
+        curr_col = curr_col->prev_col;
+    }
+
+    //for all the columns ahead of the reference column
     curr_col = reference->next_col;
 
     while (curr_col != NULL) {
@@ -359,6 +402,17 @@ Table* Table::join(Base_Column* foreign, Base_Column* reference) {
 
     return t1;
 
+}
+
+Table::~Table(){
+    Base_Column* col = col_head;
+
+    while(col != NULL){
+        Base_Column* next_col = col->next_col;
+        delete col;
+
+        col = next_col;
+    }
 }
 
 //template bool Table::addRow<int>(int);

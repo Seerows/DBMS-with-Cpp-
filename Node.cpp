@@ -74,6 +74,12 @@ bool Node<T>::operator==(Base_Node& node) {
     return false;
 }
 
+template <class T>
+Node<T>::~Node(){
+    //cout << "Node destroyed\n";
+}
+
+
 template class Node<int>;
 template class Node<string>;
 template class Node<char>;

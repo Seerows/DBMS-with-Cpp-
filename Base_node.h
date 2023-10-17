@@ -8,6 +8,9 @@ class Base_Node {
 
 public:
 
+    Base_Node();
+    virtual ~Base_Node();
+
     Base_Node* right;
     Base_Node* left;
     virtual Base_Node* getDown() = 0;       //unneccessary?
@@ -22,7 +25,6 @@ public:
     virtual void setValue(string val);
     virtual void setValue(bool val);
     virtual bool operator==(Base_Node& node) = 0;
-    Base_Node();
 
 };
 

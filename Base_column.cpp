@@ -11,3 +11,5 @@ void Base_Column::insertAtTail(string) {}
 void Base_Column::insertAtTail(char) {}
 void Base_Column::insertAtTail(bool) {}
 void Base_Column::insertAtTail(float) {}
+
+Base_Column::~Base_Column(){}

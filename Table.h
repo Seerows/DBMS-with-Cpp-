@@ -23,6 +23,8 @@ public:
 
     Table(string label);
     Table(pair<string, vector<pair<string, string>>> query);
+    ~Table();
+
     void addColumn(pair<string, string> query);
     void addColumn(Base_Column* col);
     Base_Column& operator[](string label);
@@ -31,7 +33,7 @@ public:
     void connect();
     Table* join(Base_Column* foreign, Base_Column* reference);
 
-    //implement backtracking?
+
     template <class T>
     bool addRow(T data) {
 

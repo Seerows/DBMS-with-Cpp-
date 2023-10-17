@@ -15,6 +15,7 @@ public:
     Node<T>* tail;
 
     Column<T>(string type, string name);
+    ~Column<T>();
 
     Column<T>* getCopy();
     void insertAtTail(Base_Node* node);

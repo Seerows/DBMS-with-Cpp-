@@ -119,6 +119,20 @@ void Column<T>::deleteAtTail() {
 
 }
 
+template <class T>
+Column<T>::~Column<T>(){
+
+    Node<T>* node = head;
+
+    while(node != NULL){
+        Node<T>* next_node = node->down;
+        delete node;
+
+        node = next_node;
+    }
+
+}
+
 
 template class Column<int>;
 template class Column<char>;

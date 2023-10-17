@@ -10,7 +10,6 @@ int main(int argc, char *argv[])
     //The input given by user will be parsed by the Query Parser.
     //After parsing a pair of string and vector will be returned
     //(as shown below)
-
     pair<string, vector<pair<string, string>>> query;
 
     query.first = "Employees";
@@ -28,9 +27,9 @@ int main(int argc, char *argv[])
     employees.addRow(7, string("Row5"), 'F', 1);
 
     employees.addColumn(pair<string, string>("bool", "Employed"));
-    employees.addColumn(pair<string, string>("class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >", "Salary"));
+    employees.addColumn(pair<string, string>("float", "Salary"));
 
-    employees.addRow(9, string("Row6"), 'F', 2, true, string("900.2"));
+    employees.addRow(9, string("Row6"), 'U', 2, true, 900.2f);
 
     employees.display();
     cout << endl;
@@ -51,10 +50,26 @@ int main(int argc, char *argv[])
 
     departments.display();
 
-    cout << "Joining Employees and Departments..." << endl;
+    cout << "\nJoining Employees and Departments..." << endl;
     Table* table = employees.join(&employees["Dept_ID"], &departments["ID"]);
     table->display();
 
+//    pair<string, vector<pair<string, string>>> query3;
+//    query3.first = "Temp";
+//    query3.second.push_back(pair<string, string>("class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >", "Name"));
+//    query3.second.push_back(pair<string, string>("float", "Pay"));
+
+//    Table temp(query3);
+
+//    temp.addRow(string("Row2"), 3.4f);
+//    temp.addRow(string("Row5"), 2.2f);
+//    temp.addRow(string("Row6"), 8.7f);
+
+//    temp.display();
+//    table = temp.join(&temp["Name"], &employees["Name"]);
+//    table->display();
+
+    return 0;
     //make a Primary_Column class that handles creation of Primary Key (as well as autoincrement?) and makes sure all keys are unique
     //make a Foreign_Column class that checkes if all keys exist in the reference column
     //add error handling in the addRow function. Also add backtracking.

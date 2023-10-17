@@ -17,6 +17,7 @@ public:
     int num_of_rows;
 
     Base_Column();
+    virtual ~Base_Column();
     virtual void display() = 0;
 
     virtual Base_Node& operator[](int index) = 0;
