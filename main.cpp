@@ -1,15 +1,35 @@
 #include "mainwindow.h"
 
 #include <QApplication>
+#include <QFile>
 #include "Table.h"
+#include "Database.h"
+#include "Dependencies.h"
 using namespace std;
 
-int main(int argc, char *argv[])
-{
+void initialization();
 
-    //The input given by user will be parsed by the Query Parser.
-    //After parsing a pair of string and vector will be returned
-    //(as shown below)
+int main(int argc, char *argv[]){
+
+    Database d1;
+    d1.t1->display();
+    d1.t2->display();
+
+//    pair<string, vector<pair<string, string>>> query3;
+//    query3.first = "Temp";
+//    query3.second.push_back(pair<string, string>("class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >", "Name"));
+//    query3.second.push_back(pair<string, string>("float", "Pay"));
+
+
+    //make a Primary_Column class that handles creation of Primary Key (as well as autoincrement?) and makes sure all keys are unique
+    //make a Foreign_Column class that checkes if all keys exist in the reference column
+    //add error handling in the addRow function. Also add backtracking.
+
+    return 0;
+}
+
+void initialization(){
+
     pair<string, vector<pair<string, string>>> query;
 
     query.first = "Employees";
@@ -49,30 +69,5 @@ int main(int argc, char *argv[])
     departments.addRow(4, string("CYS"), 98.3f);
 
     departments.display();
-
-    cout << "\nJoining Employees and Departments..." << endl;
-    Table* table = employees.join(&employees["Dept_ID"], &departments["ID"]);
-    table->display();
-
-//    pair<string, vector<pair<string, string>>> query3;
-//    query3.first = "Temp";
-//    query3.second.push_back(pair<string, string>("class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >", "Name"));
-//    query3.second.push_back(pair<string, string>("float", "Pay"));
-
-//    Table temp(query3);
-
-//    temp.addRow(string("Row2"), 3.4f);
-//    temp.addRow(string("Row5"), 2.2f);
-//    temp.addRow(string("Row6"), 8.7f);
-
-//    temp.display();
-//    table = temp.join(&temp["Name"], &employees["Name"]);
-//    table->display();
-
-    return 0;
-    //make a Primary_Column class that handles creation of Primary Key (as well as autoincrement?) and makes sure all keys are unique
-    //make a Foreign_Column class that checkes if all keys exist in the reference column
-    //add error handling in the addRow function. Also add backtracking.
-
 
 }

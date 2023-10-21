@@ -103,6 +103,7 @@ void Table::display() {
         }
         cout << endl;
     }
+
     cout << endl;
 }
 

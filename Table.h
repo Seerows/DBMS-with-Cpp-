@@ -4,6 +4,7 @@
 #include <cstring>
 #include "string.h"
 #include <string>
+#include <QDataStream>
 
 #include "Column.h"
 
@@ -32,7 +33,6 @@ public:
     void display();
     void connect();
     Table* join(Base_Column* foreign, Base_Column* reference);
-
 
     template <class T>
     bool addRow(T data) {
