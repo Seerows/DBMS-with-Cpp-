@@ -22,6 +22,7 @@ public:
 
     Base_Column* col_head;
 
+    Table();
     Table(string label);
     Table(pair<string, vector<pair<string, string>>> query);
     ~Table();

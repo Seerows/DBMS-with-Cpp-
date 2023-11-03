@@ -1,58 +1,56 @@
 #include "Database.h"
 
+//ignore this method. It is only used to intialize the t1 and t2 pointers.
 Database::Database(Table& table1, Table& table2){
 
-    t1 = &table1;
-    t2 = &table2;
+    table_list.insertToTail(&table1);
+    table_list.insertToTail(&table2);
 
-    QFile file("Databases.dat");
-    if (file.open(QIODevice::WriteOnly)) {
-        QDataStream out(&file);
+}
 
-        out << table1;
-        out << table2;
-        file.close();
-    } else {
-        cout << "Cannot open the file for writing." << endl;
-    }
 
+Database::Database(string name){
+
+    this->name = name;
+    t1 = t2 = temp = NULL;
+
+    //Database::pull() should be used after this to pull contents from file :)
 }
 
 int temp_rows;
 
-Database::Database(){
+void Database::pull(){
 
-    QFile file("Databases.dat");
+    QString db_name = QString::fromStdString(name);
+    db_name += ".dat";
+    QFile file(db_name);
+
     if (file.open(QIODevice::ReadOnly)) {
         QDataStream in(&file);
 
-        pair<string, vector<pair<string, string>>> query1;
+        in >> username;
+        in >> password;
 
-        in >> query1.first;
+        while(!in.atEnd()){
 
-        int num_of_cols, num_of_rows;
-        in >> num_of_cols;
-        in >> num_of_rows;
+            pair<string, vector<pair<string, string>>> query1;
 
-        query1.second.resize(num_of_cols);
-        in >> query1.second;
+            in >> query1.first;
 
-        t1 = new Table(query1);
-        temp_rows = num_of_rows;
-        in >> *t1;
+            int num_of_cols, num_of_rows;
+            in >> num_of_cols;
+            in >> num_of_rows;
 
-        pair<string, vector<pair<string, string>>> query2;
-        in >> query2.first;
+            query1.second.resize(num_of_cols);
+            in >> query1.second;
 
-        in >> num_of_cols;
-        in >> num_of_rows;
+            Table* t1 = new Table(query1);
+            temp_rows = num_of_rows;
+            in >> *t1;
 
-        query2.second.resize(num_of_cols);
-        in >> query2.second;
+            table_list.insertToTail(t1);
 
-        t2 = new Table(query2);
-        temp_rows = num_of_rows;
-        in >> *t2;
+        }
 
         file.close();
 
@@ -68,21 +66,50 @@ void Database::join(){
 
     cout << "\nJoining Employees and Departments..." << endl;
     temp = t1->join(&(*t1)["Dept_ID"], &(*t2)["ID"]);
+    temp->display();
 
 }
 
 void Database::commit(){
 
-    QFile file("Databases.dat");
+    QString db_name = QString::fromStdString(name);
+    db_name += ".dat";
+    QFile file(db_name);
+
     if (file.open(QIODevice::WriteOnly)) {
         QDataStream out(&file);
 
-        out << *t1;
-        out << *t2;
+        out << username;
+        out << password;
+
+        auto current = table_list.head;
+
+        while(current != 0){
+            out << *(current->data);
+            current = current->next;
+        }
+
         file.close();
     } else {
         cout << "Cannot open the file for writing." << endl;
     }
 
+
+}
+
+void Database::addTable(Table* table){
+
+    table_list.insertToTail(table);
+
+}
+
+void Database::printTables(){
+
+    auto current = table_list.head;
+
+    while(current != NULL){
+        current->data->display();
+        current = current->next;
+    }
 
 }

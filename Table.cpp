@@ -1,5 +1,10 @@
 #include "Table.h"
 
+Table::Table(){
+    counter = num_of_cols = num_of_rows = 0;
+    col_head = NULL;
+}
+
 Table::Table(string label) {
     counter = num_of_cols = num_of_rows = 0;
     this->label = label;

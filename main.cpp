@@ -7,28 +7,35 @@
 #include "Dependencies.h"
 using namespace std;
 
-void initialization();
+void writingtoFile();
+void readingFromFile();
 
 int main(int argc, char *argv[]){
 
-    Database d1;
-    d1.t1->display();
-    d1.t2->display();
-
-//    pair<string, vector<pair<string, string>>> query3;
-//    query3.first = "Temp";
-//    query3.second.push_back(pair<string, string>("class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >", "Name"));
-//    query3.second.push_back(pair<string, string>("float", "Pay"));
+//the following 4 lines make a new user and create a new file without any tables
+    Database d1("Mussab_DB");
+    d1.username = "Mussab";
+    d1.password = "Mussab123";
+    d1.commit();
 
 
-    //make a Primary_Column class that handles creation of Primary Key (as well as autoincrement?) and makes sure all keys are unique
-    //make a Foreign_Column class that checkes if all keys exist in the reference column
-    //add error handling in the addRow function. Also add backtracking.
+//the following code reads all the contents of the Mussab_DB.dat file and stores them in the appropriate variables.
+//you have to first run the above 4 lines of code to actually create the file.
+//    Database d1("Mussab_DB");
+//    d1.pull();
+//    cout << "Name: " << d1.name << endl;
+//    cout << "Username: " << d1.username << endl;
+//    cout << "Password: " << d1.password << endl << endl;
+//    d1.printTables();
 
     return 0;
+
 }
 
-void initialization(){
+
+//ignore these functions
+
+void writingtoFile(){
 
     pair<string, vector<pair<string, string>>> query;
 
@@ -68,6 +75,23 @@ void initialization(){
     departments.addRow(3, string("AI"), 47.2f);
     departments.addRow(4, string("CYS"), 98.3f);
 
-    departments.display();
+    departments.display(); 
+
+    Database d1("Arqam_DB");   //the name of the database will be taken from the file containing the list of all Databases.
+    d1.username = "Arqam";
+    d1.password = "Arqam123";
+    d1.addTable(&employees);
+    d1.addTable(&departments);
+    d1.commit();
+}
+
+void readingFromFile(){
+
+    Database d1("Arqam_DB");
+    d1.pull();                  //pulls all the contents of the Database from the file.
+    cout << "Name: " << d1.name << endl;
+    cout << "Username: " << d1.username << endl;
+    cout << "Password: " << d1.password << endl << endl;
+    d1.printTables();
 
 }
