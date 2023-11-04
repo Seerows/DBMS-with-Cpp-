@@ -22,18 +22,10 @@ vector<std::string> getWords::GetWords(vector<std::string> v) {
 
     }
 
-    std::cout << "QUERY IN 1D ARRAY(SPACES EXIST): " << q2 << endl;
     bool check = false;
     int count = 0;
     std::vector<char> vTemp;
     for (int i = 0; i < q2.length(); i++) {
-        //vTemp.push_back(q2[i]);
-        /*if ((q2[i] >= 97 && q2[i] <= 122) || (q2[i] >= 65 && q2[i] <= 90)) {
-            if ((q2[i + 1] == ';' || q2[i + 1] == '(' || q2[i + 1] == ')')) {
-
-                vTemp.push_back(' ');
-            }
-        }*/
         if ((q2[i] >= 58 && q2[i] <= 63) || (q2[i] >= 33 && q2[i] <= 47)) {
 
             vTemp.push_back(' ');
@@ -65,10 +57,9 @@ vector<std::string> getWords::GetWords(vector<std::string> v) {
     }
 
     q3.erase(remove_if(q3.begin(), q3.end(), ::isspace),
-             q3.end());
+        q3.end());
 
 
-    std::cout << "QUERY IN 1D ARRAY(NO SPACES, \\ DELIMITER): " << q3 << endl;
     std::vector<std::string> v2;
     string word;
     for (auto x : q3) {
@@ -85,9 +76,5 @@ vector<std::string> getWords::GetWords(vector<std::string> v) {
 
     }
     v2.push_back(word);
-    std::cout << endl << "WORDS IN THE QUERY: " << endl;
-    for (int i = 0; i < v2.size(); i++) {
-        std::cout << v2[i] << endl;
-    }
     return v2;
 }
