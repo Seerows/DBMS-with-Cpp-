@@ -1,30 +1,25 @@
-#include "mainwindow.h"
-
-#include <QApplication>
 #include<iostream>
 #include<vector>
 #include<string>
 #include"getWords.h"
 #include"validateQuery.h"
 #include<tuple>
-int main(int argc, char *argv[])
-{
-    QApplication a(argc, argv);
-    MainWindow w;
+#include"Queue.h"
+
+int main() {
+    
     std::string line;
-    std::vector<std::string> v;
-    std::cout<<"wow"<<std::endl;
+    Queue<std::string> q1;
     while (std::getline(std::cin, line))
     {
         if (line.empty()) {
             break;
         }
-        v.push_back(line);
+        q1.enqueue(line);
     }
-
     getWords g1;
-    vector<std::string> finalWords = g1.GetWords(v);
-    validateQuery vq(6);
+    vector<std::string> finalWords = g1.GetWords(q1);
+       validateQuery vq;
     //cout << vq.validate(finalWords);
     if (vq.validate(finalWords)) {
         if (vq.query.second.size() > 0) {
@@ -53,7 +48,7 @@ int main(int argc, char *argv[])
                 for (int j = 0; j < vq.InsertQuery.second.at(i).size(); j++) {
                     std::cout << " Row " << i+1 << " : " << vq.InsertQuery.second.at(i).at(j).first << " -> " << vq.InsertQuery.second.at(i).at(j).second << std::endl;
                 }
-
+                
             }
         }
         if (!vq.deleteQuery.empty()) {
@@ -88,13 +83,13 @@ int main(int argc, char *argv[])
             }
 
             if(vq.whereSelect.size()>0)
-                std::cout << "where query: " << std::endl;
+            std::cout << "where query: " << std::endl;
             for (int i = 0; i < vq.whereSelect.size(); i++) {
                 std::cout <<  std::get<0>(vq.whereSelect[i]) <<" " << std::get<1>(vq.whereSelect[i]) << " " << std::get<2>(vq.whereSelect[i]) << std::endl;
             }
 
             if(!vq.orderSelect.first.empty())
-                std::cout <<"Order query: " << vq.orderSelect.first <<" " << vq.orderSelect.second << std::endl;
+            std::cout <<"Order query: " << vq.orderSelect.first <<" " << vq.orderSelect.second << std::endl;
 
             if (!vq.joinSelect.first.first.empty()) {
                 std::cout << "Join query: " << std::endl;
@@ -112,15 +107,16 @@ int main(int argc, char *argv[])
                 fkCount++;
                 foreignKey = foreignKey + "fk" + std::to_string(fkCount);
             }
-
+            
         }
         if (!vq.dropTableQuery.empty()) {
             std::cout << "drop table: " << vq.dropTableQuery << std::endl;
         }
-
-
+        
+        
     }
     return 0;
-    w.show();
-    return a.exec();
+
+
+
 }
