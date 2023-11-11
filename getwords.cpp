@@ -1,17 +1,18 @@
 #include "getWords.h"
-vector<std::string> getWords::GetWords(vector<std::string> v) {
+#include "Queue.h"
+vector<std::string> getWords::GetWords(Queue<std::string> v) {
 
-    int a = v.size();
-    string* q1 = new string[a];
-    for (int i = 0; i < a; i++) {
-        q1[i] = v[i];
+    string* q1 = new string[v.size];
+    for (int i = 0; i < v.size; i++) {
+        q1[i] = v.peek();
+        v.dequeue();
     }
 
     string q2;
     int k = 0;
 
 
-    for (int i = 0; i < a; i++) {
+    for (int i = 0; i < v.size; i++) {
         if (q1[i][0] != ' ') {
             q2 = q2 + ' ' + q1[i];
         }
@@ -55,13 +56,14 @@ vector<std::string> getWords::GetWords(vector<std::string> v) {
             count = 0;
         }
     }
-
+    std::cout << q3 << std::endl;
     q3.erase(remove_if(q3.begin(), q3.end(), ::isspace),
         q3.end());
 
 
     std::vector<std::string> v2;
     string word;
+    
     for (auto x : q3) {
         if (x == '\\')
         {
@@ -76,5 +78,8 @@ vector<std::string> getWords::GetWords(vector<std::string> v) {
 
     }
     v2.push_back(word);
+    for (int i = 0; i < v2.size(); i++) {
+        std::cout << v2.at(i) << std::endl;
+    }
     return v2;
 }
