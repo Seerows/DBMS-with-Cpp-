@@ -1,7 +1,3 @@
-#ifndef GETWORDS_H
-#define GETWORDS_H
-
-
 #pragma once
 #include<iostream>
 using namespace std;
@@ -9,13 +5,12 @@ using namespace std;
 #include<string>
 #include<algorithm>
 #include<ctype.h>
+#include "Queue.h"
 
 
 class getWords
 {
 public:
-    vector<std::string> GetWords(vector < std::string>);
+	vector<std::string> GetWords(Queue<std::string> q1);
 };
 
-
-#endif // GETWORDS_H
