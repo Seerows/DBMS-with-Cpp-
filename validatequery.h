@@ -10,8 +10,7 @@
 class validateQuery
 {
 public:
-	int numOfColumns;
-	validateQuery(int);
+	validateQuery();
 	bool validate(std::vector<std::string> v1);
 	std::pair<std::string, std::vector<std::pair<std::string, std::string>>> query;
 	bool createCheck;
