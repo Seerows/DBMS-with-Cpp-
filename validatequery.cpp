@@ -57,8 +57,7 @@ std::string getDataType(std::string s1) {
 	
 	
 }
-validateQuery::validateQuery(int numOfColumns) {
-	this->numOfColumns = numOfColumns;
+validateQuery::validateQuery() {
 	createCheck = false;
 	insertCheck = false;
 	pkeyCheck = false;;
@@ -210,8 +209,9 @@ bool validateQuery::validate(std::vector<std::string> v1) {
 						counter = a + 1;
 						
 						while (v1.at(counter) !=")") {
+							std::cout << v1.at(counter) << std::endl;
 							if (v1.at(counter) != ",") {
-								
+								std::cout << v1.at(counter) << std::endl;
 								if (v1.at(counter) == "'") {
 									s1 = s1 + v1Copy.at(++counter);
 									while (v1Copy.at(++counter) != "'") {
@@ -222,29 +222,27 @@ bool validateQuery::validate(std::vector<std::string> v1) {
 									p1.first = getDataType(s1);
 									p1.second = s1;
 									
-									innerNum++;
+									//innerNum++;
 								}
 								else {
 									
 
 									p1.first = getDataType(s1);
 									p1.second = v1Copy.at(counter);
-									innerNum++;
+									//innerNum++;
 									
 
 								}
-								
+								std::cout << p1.first << " " << p1.second << std::endl;
 								temp.push_back(p1);
-								for (int i = 0; i < temp.size(); i++) {
-									
-								}
-								if (innerNum == numOfColumns) {
+								
+								/*if (innerNum == numOfColumns) {
 									innerNum = 0;
 									InsertQuery.second.push_back(temp);
 									insertCheck = true;
 									
 									temp.clear();
-								}
+								}*/
 								
 								s1.clear();
 								
@@ -254,7 +252,10 @@ bool validateQuery::validate(std::vector<std::string> v1) {
 							counter++;
 						}
 						
-						
+						InsertQuery.second.push_back(temp);
+						insertCheck = true;
+
+						temp.clear();
 						if (v1.at(counter + 1) == ";") {
 							a = counter+1;
 						}
