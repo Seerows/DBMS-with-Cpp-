@@ -1,32 +1,40 @@
+#ifndef QUEUE_H
+#define QUEUE_H
+
+
 #pragma once
+#include<iostream>
+//#include "Base_Node.h"
 
-template<typename query>
-class Queue
-{
+template<typename T>
+class Queue {
+
 public:
-	class node {
-	public:
-		query data;
-		node* next;
 
-		node() {
-			next = nullptr;
-		}
-		node(query data) {
-			this->data = data;
-			next = nullptr;
-		}
-	};
-	node* top;
-	node* bottom;
-	int size;
-	
-	Queue();
-	void enqueue(query data);
+    class Node {
+    public:
+        T data;
+        Node* next;
 
-	void dequeue();
+        Node() {
+            next = nullptr;
+        }
+        Node(T data) {
+            this->data = data;
+            next = nullptr;
+        }
+    };
 
-	query peek();
+    Node* top;
+    Node* bottom;
+    int size;
+
+    Queue();
+    void enQueue(T data);
+
+    void deQueue();
+
+    T peek();
 
 };
-
+#endif // QUEUE_H
