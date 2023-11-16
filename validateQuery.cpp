@@ -2,7 +2,7 @@
 bool isAlphaCheck(std::string s) {
     bool check = true;
     for (int i = 0; i < s.length(); i++) {
-        if (!(s[i] >= 65 && s[i] <= 90) && !(s[i] >= 97 && s[i] <= 122)) {
+        if (!(s[i] >= 65 && s[i] <= 90) && !(s[i] >= 97 && s[i] <= 122)&& !(s[i]>=48 && s[i]<=58)) {
             check = false;
             std::cout << "Error, column or table name cannot contain any special character." << std::endl;
         }
@@ -28,6 +28,8 @@ bool isAvailable(std::string s) {
 bool isdigit(std::string s) {
     for (int i = 0; i < s.length(); i++) {
         if (s[i] < 48 || s[i] > 57) {
+            if (s[i] == 46 && s[i - 1] >= 48 && s[i - 1] <= 57 && s[i + 1] >= 48 && s[i + 1] <= 57)
+                continue;
             return false;
         }
     }
@@ -423,6 +425,7 @@ bool validateQuery::validate(std::vector<std::string> v1) {
                     else if (v1.at(a) == "where") {
                         std::tuple<std::string, std::string, std::string> tupleTemp;
 
+
                         a++;
                         while (v1.at(a) != ";") {
 
@@ -432,13 +435,13 @@ bool validateQuery::validate(std::vector<std::string> v1) {
 
                                     if (isdigit(v1.at(a + 3))) {
                                         tupleTemp = make_tuple(v1Copy.at(a), v1Copy.at(a + 1) + v1Copy.at(a + 2), v1Copy.at(a + 3));
-                                        whereSelect.push_back(tupleTemp);
+                                        whereSelect.first.push_back(tupleTemp);
                                         whereCheck = true;
                                         a += 4;
                                     }
                                     else if (v1.at(a + 3) == "'" && isAlphaCheck(v1.at(a + 4)) && v1.at(a + 5) == "'") {
                                         tupleTemp = make_tuple(v1Copy.at(a), v1Copy.at(a + 1) + v1Copy.at(a + 2), v1Copy.at(a + 4));
-                                        whereSelect.push_back(tupleTemp);
+                                        whereSelect.first.push_back(tupleTemp);
                                         whereCheck = true;
                                         a += 6;
                                     }
@@ -451,13 +454,13 @@ bool validateQuery::validate(std::vector<std::string> v1) {
 
                                     if (isdigit(v1.at(a + 2))) {
                                         tupleTemp = make_tuple(v1Copy.at(a), v1Copy.at(a + 1), v1Copy.at(a + 2));
-                                        whereSelect.push_back(tupleTemp);
+                                        whereSelect.first.push_back(tupleTemp);
                                         whereCheck = true;
                                         a += 3;
                                     }
                                     else if (v1.at(a + 2) == "'" && isAlphaCheck(v1.at(a + 3)) && v1.at(a + 4) == "'") {
                                         tupleTemp = make_tuple(v1Copy.at(a), v1Copy.at(a + 1), v1Copy.at(a + 3));
-                                        whereSelect.push_back(tupleTemp);
+                                        whereSelect.first.push_back(tupleTemp);
                                         whereCheck = true;
                                         a += 5;
                                     }
@@ -474,9 +477,28 @@ bool validateQuery::validate(std::vector<std::string> v1) {
                                     break;
                                 }
 
-                                if (v1.at(a) == "and") {
-                                    a++;
+                                if (v1.at(a) != ";") {
+                                    if ((v1.at(a + 1) + v1.at(a + 2) != "orderby") && (v1.at(a + 1) + v1.at(a + 2) != "groupby")) {
+                                        if (v1.at(a) == "and" && whereSelect.second!="or") {
+                                            whereSelect.second = "and";
+                                            a++;
+                                        }
+                                        else if (v1.at(a) == "or" && whereSelect.second != "and") {
+                                            whereSelect.second = "or";
+                                            a++;
+                                        }
+                                        else {
+                                            check = false;
+                                            break;
+                                        }
+                                    }
                                 }
+                                else {
+                                    if(whereSelect.second != "and" && whereSelect.second != "or")
+                                        whereSelect.second = "null";
+                                }
+
+
                             }
                         }
 

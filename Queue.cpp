@@ -4,7 +4,6 @@ template<typename T>
 Queue<T>::Queue() {
     top = bottom = nullptr;
     size = 0;
-    std::cout<<"hello";
 }
 
 template<typename T>

@@ -29,7 +29,7 @@ public:
     std::pair< std::string, std::vector<std::string>> selectQuery;
     bool selectCheck;
 
-    std::vector<std::tuple<std::string, std::string, std::string>> whereSelect;
+    std::pair<std::vector<std::tuple<std::string, std::string, std::string>>, std::string> whereSelect;
     bool whereCheck;
     std::pair<std::string, std::string> orderSelect;
     bool orderCheck;

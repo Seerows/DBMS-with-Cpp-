@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 #include "getWords.h"
-#include "Queue.h""
+#include "Queue.h"
 #include "validateQuery.h"
 namespace Ui {
 class DatabaseScreen;
@@ -24,10 +24,10 @@ private slots:
 
 private:
     Ui::DatabaseScreen *ui;
-    Queue<std::string> input;
+
     std::vector<std::string> input2;
-//    getWords g1;
-//    validateQuery v1;
+    getWords g1;
+
 };
 
 #endif // DATABASESCREEN_H

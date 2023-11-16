@@ -31,10 +31,15 @@ vector<std::string> getWords::GetWords(Queue<std::string> v) {
     for (int i = 0; i < q2.length(); i++) {
         if ((q2[i] >= 58 && q2[i] <= 63) || (q2[i] >= 33 && q2[i] <= 47)) {
 
-            vTemp.push_back(' ');
-            vTemp.push_back(q2[i]);
-            vTemp.push_back(' ');
-
+            if (q2[i] == 46 && q2[i - 1] >= 48 && q2[i - 1] <= 57 && q2[i + 1] >= 48 && q2[i + 1] <= 57) {
+                vTemp.push_back(q2[i]);
+                continue;
+            }
+            else {
+                vTemp.push_back(' ');
+                vTemp.push_back(q2[i]);
+                vTemp.push_back(' ');
+            }
         }
         else {
             vTemp.push_back(q2[i]);
