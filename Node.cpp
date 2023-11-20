@@ -25,6 +25,13 @@ Node<T>* Node<T>::getCopy() {
 
 }
 
+template <class T>
+string Node<T>::getType() {
+
+    return string(typeid(data).name());
+
+}
+
 template <>
 string Node<int>::getValue() {
     return to_string(data);
@@ -61,12 +68,52 @@ void Node<T>::setValue(T val) {
     data = val;
 }
 
+template <class T>
+void Node<T>::setValue(Base_Node* val) {
+
+    if (Node<T>* temp = dynamic_cast<Node<T>*>(val)) {
+        data = temp->data;
+    }
+
+}
+
+template <class T>
+void Node<T>::deleteNodeHorizontal() {
+
+    Node<T>* upper_node = this->up, * lower_node = this->down;
+
+    if (upper_node != NULL) {
+        upper_node->down = lower_node;
+    }
+
+    if (lower_node != NULL) {
+        lower_node->up = upper_node;
+    }
+    
+    delete this;
+}
+
+template <class T>
+void Node<T>::deleteNodeVertical() {
+    
+    Base_Node* left_node = this->left, * right_node = this->right;
+
+    if (left_node != NULL) {
+        left_node->right = right_node;
+    }
+
+    if (right_node != NULL) {
+        right_node->left = left_node;
+    }
+
+    delete this;
+}
 
 template <class T>
 bool Node<T>::operator==(Base_Node& node) {
 
     if (Node<T>* temp = &dynamic_cast<Node<T>&>(node)) {
-        if (temp->data == data) {
+        if (data == temp->data) {
             return true;
         }
     }
@@ -75,10 +122,79 @@ bool Node<T>::operator==(Base_Node& node) {
 }
 
 template <class T>
-string Node<T>::getType() {
+bool Node<T>::operator!=(Base_Node& node) {
 
-    return string(typeid(data).name());
+    if (Node<T>* temp = &dynamic_cast<Node<T>&>(node)) {
+        if (data != temp->data) {
+            return true;
+        }
+    }
 
+    return false;
+}
+
+template <class T>
+bool Node<T>::operator>(Base_Node& node) {
+
+    if (Node<T>* temp = &dynamic_cast<Node<T>&>(node)) {
+        if (data > temp->data) {
+            return true;
+        }
+    }
+
+    return false;
+
+}
+
+template <class T>
+bool Node<T>::operator<(Base_Node& node) {
+
+    if (Node<T>* temp = &dynamic_cast<Node<T>&>(node)) {
+        if (data < temp->data) {
+            return true;
+        }
+    }
+
+    return false;
+
+}
+
+template <class T>
+bool Node<T>::operator>=(Base_Node& node) {
+
+    if (Node<T>* temp = &dynamic_cast<Node<T>&>(node)) {
+        if (data >= temp->data) {
+            return true;
+        }
+    }
+
+    return false;
+
+}
+
+
+template <class T>
+bool Node<T>::operator<=(Base_Node& node) {
+
+    if (Node<T>* temp = &dynamic_cast<Node<T>&>(node)) {
+        if (data <= temp->data) {
+            return true;
+        }
+    }
+
+    return false;
+
+}
+
+template <class T>
+void Node<T>::swapNodes(Base_Node& node) {
+    
+    if (Node<T>* convert = &dynamic_cast<Node<T>&>(node)) {
+        T temp = convert->data;
+        convert->data = data;
+        data = temp;
+    }
+ 
 }
 
 template <class T>

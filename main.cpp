@@ -10,16 +10,61 @@ void initialization();
 
 int main(){
 
+    Column<int> Dept("int", "DeptID");
+    Dept.insertAtTail(2);
+    Dept.insertAtTail(3);
+    Dept.insertAtTail(4);
+    
+    Column<string> Name("string", "Name");
+    Name.insertAtTail("CS");
+    Name.insertAtTail("EE");
+    Name.insertAtTail("AI");
+    Dept.next_col = &Name;
+
+    Foreign_Column<int> ID("int", "ID", &Dept);
+    Base_Node* node1 = new Node<int>(2);
+    Base_Node* node2 = new Node<int>(6);
+    Base_Node* node3 = new Node<int>(5);
+    ID.insertAtTail(node1);
+    ID.insertAtTail(node2);
+    ID.insertAtTail(node3);
+
+    ID.display();
+
+
+    /*pair<string, vector<pair<string, string>>> query;
+
+    query.first = "Employees";
+    query.second.push_back(pair<string, string>("int", "ID"));
+    
+    Base_Node* node1 = new Node<int>(2);
+    Base_Node* node2 = new Node<int>(3);
+    Base_Node* node3 = new Node<int>(4);
+
+    map<string, string> keys = { {"fk0", "ID"} };
+    Table employees(query, keys);
+    employees.col_head->insertAtTail(node1);
+    employees.col_head->insertAtTail(node2);
+    employees.col_head->insertAtTail(node3);
+    employees.col_head->display();*/
+
+    /*pair<string, vector<pair<string, string>>> query2;
+    query2.first = "Departments";
+    query2.second.push_back(pair<string, string>("int", "DeptID"));
+    query2.second.push_back(pair<string, string>("class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >", "Name"));
+    map<string, string> keys2 = { {"pk", "DeptID"} };
+    Table departments(query, keys2);*/
+
     Database d1("Arqam_DB");   //the name of the database will be taken from the file containing the list of all Databases.
     d1.username = "Arqam";
     d1.password = "Arqam123";
 
     while (1) {
 
-        std::string line;
-        Queue<std::string> commands;
-        cout << "Enter: " << endl;
-        while (std::getline(std::cin, line)){
+        string line;
+        Queue<string> commands;
+        cout << "\nEnter: " << endl;
+        while (getline(cin, line)){
             if (line.empty()) {
                 break;
             }
@@ -31,7 +76,6 @@ int main(){
         d1.processQuery(words);
         
         d1.printTables();
-
     }
     
 

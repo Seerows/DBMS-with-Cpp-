@@ -10,6 +10,10 @@ using namespace std;
 template <class T>
 class Column : public Base_Column {
 
+private:
+    void quickSort(int start, int end, string order);
+    int partition(int start, int end, string order);
+    
 public:
     Node<T>* head;
     Node<T>* tail;
@@ -18,9 +22,12 @@ public:
     ~Column<T>();
 
     Column<T>* getCopy();
-    void insertAtTail(Base_Node* node);
-    void insertAtTail(T data);
+    virtual bool insertAtTail(Base_Node* node);
+    virtual bool insertAtTail(T data);
     void deleteAtTail();
+    void deleteRow(Base_Node* node);
+    void deleteColumn();
+    void sort(string order);
 
     Node<T>* getHead();
     Node<T>* getTail();

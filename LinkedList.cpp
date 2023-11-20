@@ -19,4 +19,26 @@ void LinkedList<T>::insertToTail(T data){
     }
 }
 
+template <class T>
+void LinkedList<T>::deleteNode(T data) {
+
+    LLNode* current = head, *prev = head;
+    while (current != NULL) {
+        if (current->data == data) {
+            if (current == head) {
+                head = head->next;
+            }
+            prev->next = current->next;
+            delete current;
+            return;
+        }
+
+        prev = current;
+        current = current->next;
+    }
+
+    cout << "Table to be deleted was not found in the LinkedList." << endl;
+
+}
+
 template class LinkedList<Table*>;

@@ -27,8 +27,18 @@ public:
     string getType();
 
     void setValue(T val);
+    void setValue(Base_Node* val);
+    void deleteNodeHorizontal();
+    void deleteNodeVertical();
 
     bool operator==(Base_Node& node);
+    bool operator!=(Base_Node& node);
+    bool operator>(Base_Node& node);
+    bool operator<(Base_Node& node); 
+    bool operator>=(Base_Node& node);
+    bool operator<=(Base_Node& node);
+    void swapNodes(Base_Node& node);
+
 };
 
 #endif // NODE_H

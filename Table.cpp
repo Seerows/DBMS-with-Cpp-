@@ -13,8 +13,23 @@ Table::Table(string label) {
     col_head = NULL;
 }
 
-Table::Table(pair<string, vector<pair<string, string>>> query) {
+Table::Table(const Table& table) {
+
+    label = table.label;
+    col_head = NULL;
+
+    Base_Column* curr_col = table.col_head;
+    while (curr_col != NULL) {
+        addColumn(curr_col);
+
+        curr_col = curr_col->next_col;
+    }
+
+}
+
+Table::Table(pair<string, vector<pair<string, string>>> query, map<string, string> keys) {
     metadata = query;
+    this->keys = keys;
     num_of_cols = num_of_rows = 0;
 
     label = query.first;
@@ -29,19 +44,74 @@ Table::Table(pair<string, vector<pair<string, string>>> query) {
         if (i == 0) {
 
             if (type == "float") {
-                col_head = new Column<float>(type, query.second.at(i).second);
+                bool check = false;
+                for (const auto& key : keys) {
+                    if (query.second.at(i).second == key.second) {
+                        if (key.first == "pk") {
+                            col_head = new Primary_Column<float>(type, query.second.at(i).second);
+                        }
+                        check = true;
+                    }
+                }
+
+                if (!check)
+                    col_head = new Column<float>(type, query.second.at(i).second);
             }
             else if (type == "class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >") {
-                col_head = new Column<string>(type, query.second.at(i).second);
+                bool check = false;
+                for (const auto& key : keys) {
+                    if (query.second.at(i).second == key.second) {
+                        if (key.first == "pk") {
+                            col_head = new Primary_Column<string>(type, query.second.at(i).second);
+                        }
+                        check = true;
+                    }
+                }
+
+                if (!check)
+                    col_head = new Column<string>(type, query.second.at(i).second);
             }
             else if (type == "char") {
-                col_head = new Column<char>(type, query.second.at(i).second);
+                bool check = false;
+                for (const auto& key : keys) {
+                    if (query.second.at(i).second == key.second) {
+                        if (key.first == "pk") {
+                            col_head = new Primary_Column<char>(type, query.second.at(i).second);
+                        }
+                        check = true;
+                    }
+                }
+
+                if (!check)
+                    col_head = new Column<char>(type, query.second.at(i).second);
             }
             else if (type == "bool") {
-                col_head = new Column<bool>(type, query.second.at(i).second);
+                bool check = false;
+                for (const auto& key : keys) {
+                    if (query.second.at(i).second == key.second) {
+                        if (key.first == "pk") {
+                            col_head = new Primary_Column<bool>(type, query.second.at(i).second);
+                        }
+                        check = true;
+                    }
+                }
+
+                if (!check)
+                    col_head = new Column<bool>(type, query.second.at(i).second);
             }
             else {			//for int case. Removing this gives an error.
-                col_head = new Column<int>(type, query.second.at(i).second);
+                bool check = false;
+                for (const auto& key : keys) {
+                    if (query.second.at(i).second == key.second) {
+                        if (key.first == "pk") {
+                            col_head = new Primary_Column<int>(type, query.second.at(i).second);
+                        }
+                        check = true;
+                    }
+                }
+
+                if (!check)
+                    col_head = new Column<int>(type, query.second.at(i).second);
             }
 
         }
@@ -55,19 +125,74 @@ Table::Table(pair<string, vector<pair<string, string>>> query) {
             }
 
             if (type == "float") {
-                curr->next_col = new Column<float>(type, query.second.at(i).second);
+                bool check = false;
+                for (const auto& key : keys) {
+                    if (query.second.at(i).second == key.second) {
+                        if (key.first == "pk") {
+                            curr->next_col = new Primary_Column<float>(type, query.second.at(i).second);
+                        }
+                        check = true;
+                    }
+                }
+
+                if (!check)
+                    curr->next_col = new Column<float>(type, query.second.at(i).second);
             }
             else if (type == "class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >") {
-                curr->next_col = new Column<string>(type, query.second.at(i).second);
+                bool check = false;
+                for (const auto& key : keys) {
+                    if (query.second.at(i).second == key.second) {
+                        if (key.first == "pk") {
+                            curr->next_col = new Primary_Column<string>(type, query.second.at(i).second);
+                        }
+                        check = true;
+                    }
+                }
+
+                if (!check)
+                    curr->next_col = new Column<string>(type, query.second.at(i).second);
             }
             else if (type == "char") {
-                curr->next_col = new Column<char>(type, query.second.at(i).second);
+                bool check = false;
+                for (const auto& key : keys) {
+                    if (query.second.at(i).second == key.second) {
+                        if (key.first == "pk") {
+                            curr->next_col = new Primary_Column<char>(type, query.second.at(i).second);
+                        }
+                        check = true;
+                    }
+                }
+
+                if (!check)
+                    curr->next_col = new Column<char>(type, query.second.at(i).second);
             }
             else if (type == "bool") {
-                curr->next_col = new Column<bool>(type, query.second.at(i).second);
+                bool check = false;
+                for (const auto& key : keys) {
+                    if (query.second.at(i).second == key.second) {
+                        if (key.first == "pk") {
+                            curr->next_col = new Primary_Column<bool>(type, query.second.at(i).second);
+                        }
+                        check = true;
+                    }
+                }
+
+                if (!check)
+                    curr->next_col = new Column<bool>(type, query.second.at(i).second);
             }
             else {			//for int case. Removing this gives an error.
-                curr->next_col = new Column<int>(type, query.second.at(i).second);
+                bool check = false;
+                for (const auto& key : keys) {
+                    if (query.second.at(i).second == key.second) {
+                        if (key.first == "pk") {
+                            curr->next_col = new Primary_Column<int>(type, query.second.at(i).second);
+                        }
+                        check = true;
+                    }
+                }
+
+                if(!check)
+                    curr->next_col = new Column<int>(type, query.second.at(i).second);
             }
 
             curr->next_col->prev_col = curr;
@@ -77,6 +202,7 @@ Table::Table(pair<string, vector<pair<string, string>>> query) {
     }
 
 }
+
 
 void Table::display() {
 
@@ -129,6 +255,10 @@ void Table::connect() {
 
 void Table::addColumn(pair<string, string> query) {
 
+    if (query.first == "string") {
+        query.first = "class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >";
+    }
+
     string type = query.first;
     string name = query.second;
 
@@ -142,7 +272,7 @@ void Table::addColumn(pair<string, string> query) {
         if (type == "float") {
             col_head = new Column<float>(type, name);
         }
-        else if (type == "class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >") {
+        else if (type == "class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >" || type == "string") {
             col_head = new Column<string>(type, name);
         }
         else if (type == "char") {
@@ -165,7 +295,7 @@ void Table::addColumn(pair<string, string> query) {
                 curr->next_col->insertAtTail(0.0f);
             }
         }
-        else if (type == "class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >") {
+        else if (type == "class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >" || type == "string") {
             curr->next_col = new Column<string>(type, name);
 
             for (int i = 0; i < num_of_rows; i++) {
@@ -245,6 +375,71 @@ void Table::addColumn(Base_Column* col) {
     num_of_rows = col->num_of_rows;		//this line will cause problems if all columns added do not have the same num_of_rows
 
     metadata.second.push_back(pair<string, string>(col->type, col->label));
+}
+
+void Table::deleteRow(Base_Column* col, Base_Node* node) {
+
+    Base_Column* right_col = col->next_col, * left_col = col->prev_col;
+    
+    Base_Node* current = node->left;
+    while (left_col != NULL) {
+        Base_Node* temp_node = current->left;
+        left_col->deleteRow(current);
+
+        left_col = left_col->prev_col;
+        current = temp_node;
+    }
+
+    current = node->right;
+    while (right_col != NULL) {
+        Base_Node* temp_node = current->right;
+        right_col->deleteRow(current);
+        
+        right_col = right_col->next_col;
+        current = temp_node;
+    }
+
+
+    col->deleteRow(node);
+    num_of_rows--;
+
+}
+
+void Table::deleteAllRows() {
+
+    Base_Node* current = col_head->getHead();
+    while (current != NULL) {
+        Base_Node* temp = current->getDown();
+        deleteRow(col_head, current);
+
+        current = temp;
+    }
+
+}
+
+void Table::deleteColumn(string label) {
+
+    Base_Column* col = getColumn(label);
+
+    if (col == NULL) {
+        return;
+    }
+
+    if (col == col_head) {
+        col_head = col_head->next_col;
+    }
+
+    Base_Column* left_col = col->prev_col, * right_col = col->next_col;
+    if (left_col != NULL) {
+        left_col->next_col = right_col;
+    }
+    
+    if (right_col != NULL) {
+        right_col->prev_col = left_col;
+    }
+    
+    col->deleteColumn();
+    num_of_cols--;
 }
 
 Base_Column& Table::operator[](string label) {
@@ -409,7 +604,7 @@ Table* Table::join(Base_Column* foreign, Base_Column* reference) {
 }
 
 bool Table::addRow(Queue<Base_Node*> inputs, Base_Column* current, int counter) {
-
+    
     string type = inputs.peek()->getType();
 
     if (type == "i") {
@@ -432,7 +627,9 @@ bool Table::addRow(Queue<Base_Node*> inputs, Base_Column* current, int counter) 
     if (metadata.second.at(counter).first == type) {
         int size = inputs.size;
         if (size > 1) {
-            current->insertAtTail(inputs.peek());
+            if (!current->insertAtTail(inputs.peek())) {
+                return false;
+            }
             inputs.deQueue();
 
             counter++;
@@ -452,12 +649,13 @@ bool Table::addRow(Queue<Base_Node*> inputs, Base_Column* current, int counter) 
         }
     }
 
-    cout << "Row cannot be added." << endl;
+    //cout << "Row cannot be added." << endl;
     return false;
 
 }
 
 bool Table::addRow(Base_Node* data, Base_Column* current, int counter) {
+    
     string type = data->getType();
 
     if (type == "i") {
@@ -476,19 +674,15 @@ bool Table::addRow(Base_Node* data, Base_Column* current, int counter) {
         type = "float";
     }
 
-    if (metadata.second.at(counter).first == type && counter == num_of_cols - 1) {
-        current->insertAtTail(data);
+    if ((metadata.second.at(counter).first == type) && (counter == num_of_cols - 1) && current->insertAtTail(data)) {
+        num_of_rows++;
+        connect();
+        return true;
     }
-    else {
-        cout << "Row cannot be added." << endl;
-        return false;
-    }
+    
+    cout << "Row cannot be added." << endl;
+    return false;
 
-    num_of_rows++;
-
-    connect();
-
-    return true;
 }
 
 Base_Column* Table::getColumn(string label) {
@@ -529,4 +723,5 @@ Table::~Table() {
 
         col = next_col;
     }
+
 }

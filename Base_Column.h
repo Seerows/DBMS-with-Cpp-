@@ -25,15 +25,19 @@ public:
     virtual Base_Node* getHead() = 0;
     virtual Base_Node* getTail() = 0;
     virtual Base_Column* getCopy() = 0;
+    virtual void deleteRow(Base_Node* node) = 0;
+    virtual void deleteColumn() = 0;
+    virtual void sort(string order) = 0;
 
-    virtual void insertAtTail(int);
-    virtual void insertAtTail(string);
-    virtual void insertAtTail(char);
-    virtual void insertAtTail(float);
-    virtual void insertAtTail(bool);
+    virtual bool insertAtTail(int);
+    virtual bool insertAtTail(string);
+    virtual bool insertAtTail(char);
+    virtual bool insertAtTail(float);
+    virtual bool insertAtTail(bool);
 
-    virtual void insertAtTail(Base_Node*) = 0;
+    virtual bool insertAtTail(Base_Node*) = 0;
     virtual void deleteAtTail() = 0;
+    virtual bool validate(Base_Node*);
 
 };
 

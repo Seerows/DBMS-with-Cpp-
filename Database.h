@@ -17,10 +17,16 @@ using namespace std;
 class Database{
 
 private:
-    bool handleCreateQuery(pair<string, vector< pair<string, string>>> createQuery);
+    bool handleCreateQuery(pair<string, vector< pair<string, string>>> createQuery, map<string, string> keys, bool primaryKeyCheck, bool foreignKeyCheck);
     bool handleInsertQuery(pair<string, vector< vector<pair<string, string>>>> insertQuery);
-    bool handleSelectQuery(pair<string, vector<string>> selectQuery);
-    bool handleUpdateQuery(pair<string, vector< pair<string, string>>> updateQuery, vector<tuple<string, string, string>> whereQuery);
+    bool handleSelectQuery(pair<string, vector<string>> selectQuery, vector<tuple<string, string, string>> whereQuery, bool whereCheck, pair<string, string> orderQuery, bool orderCheck, pair<pair<string, string>, pair<string, string>> joinSelect, bool joinCheck);
+    bool handleUpdateQuery(pair<string, vector< pair<string, string>>> updateQuery, vector<tuple<string, string, string>> whereQuery, bool whereCheck);
+    bool handleAlterQuery(pair<string, vector<pair<string, string>>> alterQuery);
+    bool handleDeleteQuery(string deleteQuery, vector<tuple<string, string, string>> whereQuery, bool whereCheck);
+    bool handleDropQuery(string dropTableQuery);
+    
+    bool handleJoin(std::pair<std::pair<std::string, std::string>, std::pair<std::string, std::string>> joinSelect, bool joinCheck);
+    bool whereDeleteUtil(Table* table, vector<tuple<string, string, string>> whereQuery);
 
 public:
     Database(string name);
@@ -29,8 +35,6 @@ public:
     string username;
     string password;
     int num_of_tables;
-
-    Table* temp;
 
     LinkedList<Table*> table_list;
 
@@ -45,7 +49,6 @@ public:
 
     //put in Dependencies.cpp later
     bool compareStrings(string s1, string s2);
-    
     Base_Node* convert(string type, string value);
 
 };

@@ -12,6 +12,7 @@ Database::Database(Table& table1, Table& table2){
 Database::Database(string name){
 
     this->name = name;
+    num_of_tables = 0;
 
     //Database::pull() should be used after this to pull contents from file :)
 }
@@ -22,7 +23,7 @@ void Database::addTable(Table* table) {
 
 }
 
-bool Database::processQuery(vector< string> words){
+bool Database::processQuery(vector<string> words){
 
     validateQuery vq;
     bool validate = vq.validate(words);
@@ -32,26 +33,57 @@ bool Database::processQuery(vector< string> words){
     }
 
     if (vq.createCheck) {
-        return handleCreateQuery(vq.query);
+        handleCreateQuery(vq.query, vq.keys, vq.pkeyCheck, vq.fkeyCheck);
     }
-    else if (vq.insertCheck) {
-        return handleInsertQuery(vq.InsertQuery);
+    
+    if (vq.insertCheck) {
+        handleInsertQuery(vq.InsertQuery);
     }
-    else if (vq.selectCheck) {
-        return handleSelectQuery(vq.selectQuery);
+    
+    if (vq.selectCheck) {
+        handleSelectQuery(vq.selectQuery, vq.whereSelect, vq.whereCheck, vq.orderSelect, vq.orderCheck, vq.joinSelect, vq.joinCheck);
     }
-    else if (vq.updateCheck) {
-        return handleUpdateQuery(vq.updateQuery, vq.whereSelect);
+    
+    if (vq.updateCheck) {
+        handleUpdateQuery(vq.updateQuery, vq.whereSelect, vq.whereCheck);
     }
+
+    if (vq.alterCheck) {
+        handleAlterQuery(vq.alterQuery);
+    }
+
+    if (vq.deleteCheck) {
+        handleDeleteQuery(vq.deleteQuery, vq.whereSelect, vq.whereCheck);
+    }
+
+    if (vq.dropTableCheck) {
+        handleDropQuery(vq.dropTableQuery);
+    }
+
+    return true;
 
 }
 
-bool Database::handleCreateQuery(pair<string, vector< pair<string, string>>> createQuery) {
+bool Database::handleCreateQuery(pair<string, vector< pair<string, string>>> createQuery, map<string, string> keys, bool primaryKeyCheck, bool foreignKeyCheck) {
 
-    Table* table = new Table(createQuery);
+    auto current = table_list.head;
+    while (current != NULL) {
+        if (compareStrings(current->data->label, createQuery.first)) {
+            cout << createQuery.first << " table already exists." << endl;
+            return false;
+        }
 
-    /*for (int i = 0; i < vq.query.second.size(); i++) {
-        cout << vq.query.second.at(i).first << "--" << vq.query.second.at(i).second << endl;
+        current = current->next;
+    }
+
+    for (const auto& entry : keys) {
+        std::cout << "Key: " << entry.first << ", Value: " << entry.second << "\n";
+    }
+
+    Table* table = new Table(createQuery, keys);
+
+    /*for (int i = 0; i < createQuery.second.size(); i++) {
+        cout << createQuery.second.at(i).first << "--" << createQuery.second.at(i).second << endl;
     }*/
 
     table_list.insertToTail(table);
@@ -59,7 +91,7 @@ bool Database::handleCreateQuery(pair<string, vector< pair<string, string>>> cre
 
 }
 
-bool Database::handleInsertQuery(pair<string, vector< vector<pair<string, string>>>> insertQuery) {
+bool Database::handleInsertQuery(pair<string, vector<vector<pair<string, string>>>> insertQuery) {
 
     auto table = getTable(insertQuery.first);
 
@@ -75,14 +107,15 @@ bool Database::handleInsertQuery(pair<string, vector< vector<pair<string, string
             inputs.enQueue(convert(insertQuery.second.at(i).at(j).first, insertQuery.second.at(i).at(j).second));
         }
         table->addRow(inputs, table->col_head);
-
-        cout << endl << endl;
     }
 
     return true;
 }
 
-bool Database::handleSelectQuery(pair<string, vector<string>> selectQuery) {
+bool Database::handleSelectQuery(pair<string, vector<string>> selectQuery, vector<tuple<string, string, string>> whereQuery, bool whereCheck, pair<string, string> orderQuery, bool orderCheck, pair<pair<string, string>, pair<string, string>> joinSelect, bool joinCheck){
+
+    /*cout << joinSelect.first.first << "--" << joinSelect.first.second << endl;
+    cout << joinSelect.second.first << "--" << joinSelect.second.second << endl;*/
 
     auto table = getTable(selectQuery.first);
 
@@ -91,31 +124,87 @@ bool Database::handleSelectQuery(pair<string, vector<string>> selectQuery) {
         return false;
     }
 
+    Table* select = new Table(table->label);
     for (int i = 0; i < selectQuery.second.size(); i++) {
         Base_Column* curr_col = table->col_head;
-
+        
         if (selectQuery.second.at(i) == "*") {
-            table->display();
+            delete select;
+            select = new Table(*table);
+            continue;
         }
-        else {
-            while (curr_col != NULL) {
 
-                if (compareStrings(curr_col->label, selectQuery.second.at(i))) {
-                    curr_col->display();
-                    break;
-                }
+        while (curr_col != NULL) {
+            if (compareStrings(curr_col->label, selectQuery.second.at(i))) {
+                select->addColumn(curr_col);
+                break;
+            }
 
-                curr_col = curr_col->next_col;
+            curr_col = curr_col->next_col;
+        }
+        
+    }
+
+    //whereQuery work
+    //add the inverse on the AND & OR operator later.
+
+    if (whereCheck) {
+        vector<tuple<string, string, string>> inverse = whereQuery;
+        for (int i = 0; i < inverse.size(); i++) {
+            if (get<1>(inverse.at(i)) == "=") {
+                get<1>(inverse.at(i)) = "!=";
+            }
+            else if (get<1>(inverse.at(i)) == "!=") {
+                get<1>(inverse.at(i)) = "=";
+            }
+            else if (get<1>(inverse.at(i)) == ">") {
+                get<1>(inverse.at(i)) = "<=";
+            }
+            else if (get<1>(inverse.at(i)) == "<") {
+                get<1>(inverse.at(i)) = ">=";
+            }
+            else if (get<1>(inverse.at(i)) == ">=") {
+                get<1>(inverse.at(i)) = "<";
+            }
+            else if (get<1>(inverse.at(i)) == "<=") {
+                get<1>(inverse.at(i)) = ">";
             }
         }
 
+        whereDeleteUtil(select, inverse);
+    }
+    
+
+    //orderQuery work
+
+    if (orderCheck) {
+        Base_Column* curr_col = select->getColumn(orderQuery.first);
+
+        if (curr_col == NULL) {
+            cout << "Invalid Order Query." << endl;
+            return false;
+        }
+
+
+        if (compareStrings(orderQuery.second, "asc")) {
+            curr_col->sort("asc");
+        }
+        else if (compareStrings(orderQuery.second, "desc")) {
+            curr_col->sort("desc");
+        }
+    }
+    
+
+    select->display();
+
+    if (select != table) {
+        delete select;
     }
 
     return true;
 }
 
-//continue here
-bool Database::handleUpdateQuery(pair<string, vector< pair<string, string>>> updateQuery, vector<tuple<string, string, string>> whereQuery) {
+bool Database::handleUpdateQuery(pair<string, vector<pair<string, string>>> updateQuery, vector<tuple<string, string, string>> whereQuery, bool whereCheck) {
 
     /*
     UPDATE your_table_name
@@ -123,40 +212,224 @@ bool Database::handleUpdateQuery(pair<string, vector< pair<string, string>>> upd
     WHERE your_condition;
     */
 
-    cout << updateQuery.first << endl << endl;
-
-    for (int i = 0; i < updateQuery.second.size(); i++) {
-        cout << updateQuery.second.at(i).first << "--" << updateQuery.second.at(i).second << endl;
-    }
-
-    cout << endl;
-
-    for (int i = 0; i < whereQuery.size(); i++) {
-        cout << std::get<0>(whereQuery.at(i)) << "--" << std::get<1>(whereQuery.at(i)) << "--" << std::get<2>(whereQuery.at(i)) << endl;
-    }
-    cout << endl;
-
+    /*for (int i = 0; i < whereQuery.size(); i++) {
+        cout << get<0>(whereQuery.at(i)) << "--" << get<1>(whereQuery.at(i)) << "--" << get<2>(whereQuery.at(i)) << endl;
+    }*/
 
     auto table = getTable(updateQuery.first);
-
     if (table == NULL) {
         cout << "Invalid Updation Input." << endl;
         return false;
     }
 
-    //Base_Column* curr_col = table->getColumn(whereQuery)
+
+    //if there is no WHERE statement
+    if (!whereCheck) {
+        for (int i = 0; i < updateQuery.second.size(); i++) {
+            Base_Column* affected = table->getColumn(updateQuery.second.at(i).first);
+            if (affected == NULL) {
+                cout << "Invalid Updation Input." << endl;
+                return false;
+            }
+
+            Base_Node* affected_head = affected->getHead();
+
+            Base_Node* replace = convert(affected->getHead()->getType(), updateQuery.second.at(i).second);
+
+            while (affected_head != NULL) {
+                if (!(affected->validate(replace))) {
+                    return false;
+                }
+                affected_head->setValue(replace);
+
+                affected_head = affected_head->getDown();
+            }
+
+        }
+        return true;
+    }
+
+
+    //if there is a WHERE statement
+    for (int i = 0; i < updateQuery.second.size(); i++) {
+        
+        for (int j = 0; j < whereQuery.size(); j++) {
+            
+            Base_Column* col = table->getColumn(std::get<0>(whereQuery.at(j)));
+            Base_Column* affected = table->getColumn(updateQuery.second.at(i).first);
+
+            if (col == NULL || affected == NULL) {
+                cout << "Invalid Updation Input." << endl;
+                return false;
+            }
+
+            Base_Node* affected_head = affected->getHead();
+            Base_Node* head = col->getHead();
+
+            Base_Node* target = convert(col->getHead()->getType(), std::get<2>(whereQuery.at(j)));
+            Base_Node* replace = convert(affected->getHead()->getType(), updateQuery.second.at(i).second);
+
+            while (head != NULL) {
+                if ((std::get<1>(whereQuery.at(j)) == "=") && (*head == *target)) {
+                    if (!(affected->validate(replace))) {
+                        return false;
+                    }
+                    affected_head->setValue(replace);
+                }
+                else if ((std::get<1>(whereQuery.at(j)) == ">") && (*head > *target)) {
+                    if (!(affected->validate(replace))) {
+                        return false;
+                    }
+                    affected_head->setValue(replace);
+                }
+                else if ((std::get<1>(whereQuery.at(j)) == "<") && (*head < *target)) {
+                    if (!(affected->validate(replace))) {
+                        return false;
+                    }
+                    affected_head->setValue(replace);
+                }
+                else if ((std::get<1>(whereQuery.at(j)) == ">=") && (*head >= *target)) {
+                    if (!(affected->validate(replace))) {
+                        return false;
+                    }
+                    affected_head->setValue(replace);
+                }
+                else if ((std::get<1>(whereQuery.at(j)) == "<=") && (*head <= *target)) {
+                    if (!(affected->validate(replace))) {
+                        return false;
+                    }
+                    affected_head->setValue(replace);
+                }
+
+                affected_head = affected_head->getDown();
+                head = head->getDown();
+            }
+
+        }
+        
+    }
+
+    return true;
+}
+
+bool Database::handleAlterQuery(pair<string, vector<pair<string, string>>> alterQuery) {
+
+    auto table = getTable(alterQuery.first);
+
+    if (table == NULL) {
+        cout << "Invalid Alteration Input." << endl;
+        return false;
+    }
+
+    cout << alterQuery.first << endl;
+    for (int i = 0; i < alterQuery.second.size(); i++) {
+        cout << alterQuery.second.at(i).first << " " << alterQuery.second.at(i).second << endl;
+    }
+
+    for (int i = 0; i < alterQuery.second.size(); i++) {
+        if (alterQuery.second.at(i).first == "drop") {
+            table->deleteColumn(alterQuery.second.at(i).second);
+        }
+        else {
+            table->addColumn(pair<string, string>(alterQuery.second.at(i).first, alterQuery.second.at(i).second));
+        }
+    }
+
+    return true;
+
+}
+
+bool Database::handleDeleteQuery(string deleteQuery, vector<tuple<string, string, string>> whereQuery, bool whereCheck) {
+
+    auto table = getTable(deleteQuery);
+    
+    if (table == NULL) {
+        cout << "Invalid Deletion Input." << endl;
+        return false;
+    }
+
+    if (!whereCheck) {
+        table->deleteAllRows();
+
+        return true;
+    }
+
+    whereDeleteUtil(table, whereQuery);
+    
+    return true;
+
+}
+
+bool Database::handleDropQuery(string dropTableQuery) {
+
+    auto table = getTable(dropTableQuery);
+
+    if (table == NULL) {
+        cout << "Invalid Drop Query.\n";
+        return false;
+    }
+
+    table_list.deleteNode(table);
+
+    return true;
+
+}
+
+bool Database::whereDeleteUtil(Table* table, vector<tuple<string, string, string>> whereQuery) {
+
+    for (int i = 0; i < whereQuery.size(); i++) {
+        Base_Column* col = table->getColumn(get<0>(whereQuery.at(i)));
+        if (col == NULL) {
+            cout << "Invalid Where Query." << endl;
+            return false;
+        }
+
+        Base_Node* target = convert(col->getHead()->getType(), get<2>(whereQuery.at(i)));
+
+        Base_Node* current = col->getHead();
+        while (current != NULL) {
+            Base_Node* temp = current->getDown();
+            if ((std::get<1>(whereQuery.at(i)) == "=") && (*current == *target)) {
+                table->deleteRow(col, current);
+            }
+            else if ((std::get<1>(whereQuery.at(i)) == "!=") && (*current != *target)) {
+                table->deleteRow(col, current);
+            }
+            else if ((std::get<1>(whereQuery.at(i)) == ">") && (*current > *target)) {
+                table->deleteRow(col, current);
+            }
+            else if ((std::get<1>(whereQuery.at(i)) == "<") && (*current < *target)) {
+                table->deleteRow(col, current);
+            }
+            else if ((std::get<1>(whereQuery.at(i)) == ">=") && (*current >= *target)) {
+                table->deleteRow(col, current);
+            }
+            else if ((std::get<1>(whereQuery.at(i)) == "<=") && (*current <= *target)) {
+                table->deleteRow(col, current);
+            }
+
+            current = temp;
+        }
+
+    }
+
     return true;
 }
 
 void Database::printTables() {
-
     auto current = table_list.head;
-
+    
     while (current != NULL) {
         current->data->display();
         current = current->next;
     }
 
+    //auto curr_col = current->data->col_head;
+    //while (curr_col != NULL) {
+    //    curr_col->display();
+
+    //    curr_col = curr_col->next_col;
+    //}
 }
 
 
@@ -247,6 +520,8 @@ Table* Database::getTable(string label) {
         if (compareStrings(current->data->label, label)) {
             return current->data;
         }
+
+        current = current->next;
     }
 
     return NULL;

@@ -257,11 +257,8 @@ bool validateQuery::validate(std::vector<std::string> v1) {
 							counter++;
 						}
 
-
 						InsertQuery.second.push_back(temp);
 						insertCheck = true;
-
-
 
 						temp.clear();
 						if (v1.at(counter + 1) == ";") {

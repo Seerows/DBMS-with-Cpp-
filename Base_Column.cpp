@@ -6,10 +6,12 @@ Base_Column::Base_Column() {
 }
 
 void Base_Column::display() {}
-void Base_Column::insertAtTail(int) {}
-void Base_Column::insertAtTail(string) {}
-void Base_Column::insertAtTail(char) {}
-void Base_Column::insertAtTail(bool) {}
-void Base_Column::insertAtTail(float) {}
+bool Base_Column::insertAtTail(int) { return false;  }
+bool Base_Column::insertAtTail(string) { return false; }
+bool Base_Column::insertAtTail(char) { return false; }
+bool Base_Column::insertAtTail(bool) { return false; }
+bool Base_Column::insertAtTail(float) { return false; }
+
+bool Base_Column::validate(Base_Node*) {  return true; }
 
 Base_Column::~Base_Column(){}

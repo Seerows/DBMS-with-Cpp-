@@ -23,10 +23,12 @@
     <ClCompile Include="Base_Node.cpp" />
     <ClCompile Include="Column.cpp" />
     <ClCompile Include="Database.cpp" />
+    <ClCompile Include="Foreign_Column.cpp" />
     <ClCompile Include="getwords.cpp" />
     <ClCompile Include="LinkedList.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Node.cpp" />
+    <ClCompile Include="Primary_Column.cpp" />
     <ClCompile Include="Queue.cpp" />
     <ClCompile Include="Table.cpp" />
     <ClCompile Include="validateQuery.cpp" />
@@ -36,9 +38,11 @@
     <ClInclude Include="Base_Node.h" />
     <ClInclude Include="Column.h" />
     <ClInclude Include="Database.h" />
+    <ClInclude Include="Foreign_Column.h" />
     <ClInclude Include="getwords.h" />
     <ClInclude Include="LinkedList.h" />
     <ClInclude Include="Node.h" />
+    <ClInclude Include="Primary_Column.h" />
     <ClInclude Include="Queue.h" />
     <ClInclude Include="Table.h" />
     <ClInclude Include="validateQuery.h" />

@@ -22,7 +22,7 @@ void Column<T>::display() {
 }
 
 template <class T>
-void Column<T>::insertAtTail(Base_Node* node) {
+bool Column<T>::insertAtTail(Base_Node* node) {
 
     if (Node<T>* temp = dynamic_cast<Node<T>*>(node)) {
         if (head == NULL) {
@@ -34,16 +34,18 @@ void Column<T>::insertAtTail(Base_Node* node) {
             tail = tail->down;
         }
         num_of_rows++;
+
+        return true;
     }
-    else {
-        cout << "Cannot insert at Tail in Column<T>" << endl;
-    }
+    
+    cout << "Cannot insert at Tail in Column<T>" << endl;
+    return false;
 
 }
 
 template <class T>
-void Column<T>::insertAtTail(T data) {
-
+bool Column<T>::insertAtTail(T data) {
+    
     if (head == NULL) {
         head = tail = new Node<T>(data);
     }
@@ -55,6 +57,7 @@ void Column<T>::insertAtTail(T data) {
     }
 
     num_of_rows++;
+    return true;
 }
 
 template <class T>
@@ -96,6 +99,40 @@ Column<T>* Column<T>::getCopy() {
     return copy;
 }
 
+
+template <class T>
+void Column<T>::deleteRow(Base_Node* node) {
+
+    if (Node<T>* temp = dynamic_cast<Node<T>*>(node)) {
+
+        if (head == temp) {
+            head = temp->down;
+        }
+
+        if (tail == temp) {
+            tail = tail->up;
+        }
+
+        node->deleteNodeHorizontal();
+        num_of_rows--;
+    }
+
+}
+
+template <class T>
+void Column<T>::deleteColumn() {
+
+    Node<T>* current = head;
+    while (current != NULL) {
+        Node<T>* temp = current->down;
+        current->deleteNodeVertical();
+
+        current = temp;
+    }
+    head = NULL;
+    delete this;
+}
+
 template <class T>
 void Column<T>::deleteAtTail() {
 
@@ -120,8 +157,56 @@ void Column<T>::deleteAtTail() {
 }
 
 template <class T>
-Column<T>::~Column<T>(){
+void Column<T>::sort(string order) {
 
+    quickSort(0, num_of_rows - 1, order);
+
+}
+
+template <class T>
+void Column<T>::quickSort(int start, int end, string order) {
+
+    if (start >= end) {
+        return;
+    }
+
+    int pivot = partition(start, end, order);
+
+    quickSort(start, pivot - 1, order);
+    quickSort(pivot + 1, end, order);
+
+}
+
+template <class T>
+int Column<T>::partition(int start, int end, string order) {
+
+    Node<T>* pivot = operator[](end).getCopy();
+
+    int i = start - 1;
+
+    for (int j = start; j < end; j++) {
+
+        if ((order == "asc") && (operator[](j) <= *pivot)) {
+            i++;
+
+            Base_Node::swap(&operator[](i), &operator[](j));
+        }
+        else if ((order == "desc") && (operator[](j) > *pivot)) {
+            i++;
+
+            Base_Node::swap(&operator[](i), &operator[](j));
+        }
+
+    }
+
+    Base_Node::swap(&operator[](i + 1), &operator[](end));
+
+    return i + 1;
+
+}
+
+template <class T>
+Column<T>::~Column<T>(){
     Node<T>* node = head;
 
     while(node != NULL){

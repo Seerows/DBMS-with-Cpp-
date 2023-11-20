@@ -23,6 +23,7 @@ public:
     LLNode* head;
     LinkedList();
     void insertToTail(T data);
+    void deleteNode(T data);
 
 };
 
