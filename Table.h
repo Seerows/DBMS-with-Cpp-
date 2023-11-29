@@ -10,13 +10,14 @@
 #include "Primary_Column.h"
 #include "Foreign_Column.h"
 #include "Queue.h"
+#include "QDebug"
 
 using namespace std;
 
 class Table {
 
 public:
-    int num_of_cols, num_of_rows;
+    int num_of_cols, num_of_rows, num_of_keys;
 
     string label;
     pair<string, vector<pair<string, string>>> metadata;
@@ -26,7 +27,7 @@ public:
 
     Table();
     Table(string label);
-    Table(pair<string, vector<pair<string, string>>> query, map<string, string> keys = { {"@", "@"} });
+    Table(pair<string, vector<pair<string, string>>> query, map<string, string> keys = { {"?", "?"} }, Queue<Base_Column*>* references = NULL);
 
     Table(const Table& table);
     ~Table();

@@ -87,7 +87,6 @@ Node<T>& Column<T>::operator[](int index) {
 
 template <class T>
 Column<T>* Column<T>::getCopy() {
-
     Column<T>* copy = new Column<T>(type, label);
 
     Node<T>* current = head;
@@ -143,6 +142,7 @@ void Column<T>::deleteAtTail() {
         tail = tail->up;
 
         delete del;
+        tail->down = NULL;
 
         num_of_rows--;
 

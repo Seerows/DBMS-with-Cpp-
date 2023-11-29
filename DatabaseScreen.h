@@ -5,6 +5,8 @@
 #include <vector>
 #include <string>
 #include <tuple>
+#include <QRegularExpression>
+#include <QDebug>
 #include "getWords.h"
 #include "Queue.h"
 #include "validateQuery.h"

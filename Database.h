@@ -21,7 +21,7 @@ using namespace std;
 class Database{
 
 private:
-    bool handleCreateQuery(pair<string, vector< pair<string, string>>> createQuery, map<string, string> keys, bool primaryKeyCheck, bool foreignKeyCheck);
+    bool handleCreateQuery(pair<string, vector< pair<string, string>>> createQuery, map<string, string> keys);
     bool handleInsertQuery(pair<string, vector< vector<pair<string, string>>>> insertQuery);
     bool handleSelectQuery(pair<string, vector<string>> selectQuery, pair<vector<tuple<string, string, string>>, string> whereQuery, bool whereCheck, pair<string, string> orderQuery, bool orderCheck, pair<pair<string, string>, pair<string, string>> joinSelect, bool joinCheck);
     bool handleUpdateQuery(pair<string, vector<pair<string, string>>> updateQuery, pair<vector<tuple<string, string, string>>, string> whereQuery, bool whereCheck);
@@ -30,9 +30,10 @@ private:
     bool handleDropQuery(string dropTableQuery);
     bool handleCommit();
 
-    bool handleJoin(std::pair<std::pair<std::string, std::string>, std::pair<std::string, std::string>> joinSelect, bool joinCheck);
+    bool handleJoin(pair<pair<string, string>, pair<string, string>> joinQuery, bool joinCheck);
     bool whereDeleteUtil(Table* table, pair<vector<tuple<string, string, string>>, string> whereQuery);
     bool whereAddUtil(Table*& table, pair<vector<tuple<string, string, string>>, string> whereQuery);
+    Queue<Base_Column*> getReferenceColumns(map<string, string> keys);
 
 public:
     Database(string name);
@@ -56,6 +57,7 @@ public:
     //put in Dependencies.cpp later
     bool compareStrings(string s1, string s2);
     Base_Node* convert(string type, string value);
+    tuple<string, string, string> parseFk(string s1);
 
 };
 

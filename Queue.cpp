@@ -76,3 +76,4 @@ bool Queue<T>::remove(T data) {
 
 template class Queue<std::string>;
 template class Queue<Base_Node*>;
+template class Queue<Base_Column*>;

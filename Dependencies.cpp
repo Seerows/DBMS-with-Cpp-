@@ -7,6 +7,9 @@ QDataStream& operator<<(QDataStream& out, Table& obj){
     out << obj.num_of_rows;
     out << obj.metadata.second;
 
+    out << obj.num_of_keys;
+    out << obj.keys;
+
     for(int i=0; i<obj.num_of_rows; i++){
         for(int j=0; j<obj.num_of_cols; j++){
 
@@ -135,6 +138,30 @@ QDataStream& operator>>(QDataStream& in, vector<pair<string, string>> &obj){
 
     return in;
 }
+
+QDataStream& operator<<(QDataStream& out, map<string, string> &obj){
+
+    for(const auto& key : obj){
+        string s1 = key.first, s2 = key.second;
+
+        out << s1;
+        out << s2;
+    }
+
+    return out;
+}
+
+QDataStream& operator>>(QDataStream& in, map<string, string> &obj){
+
+    for(int i = 0; i < temp_keys; i++){
+        string s1, s2;
+        in >> s1 >> s2;
+        obj.insert(pair<string, string>(s1, s2));
+    }
+
+    return in;
+}
+
 
 tuple<string, string, string> parseFk(string s1) {
     int i = 0;

@@ -1,6 +1,8 @@
 #pragma once
 #include<iostream>
+#include <QDebug>
 #include "Base_Node.h"
+#include "Base_Column.h"
 
 template<typename T>
 class Queue{

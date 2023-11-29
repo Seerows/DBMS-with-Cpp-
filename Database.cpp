@@ -30,11 +30,12 @@ bool Database::processQuery(vector<string> words) {
     bool validate = vq.validate(words);
 
     if (!validate) {
+        cout << "Invalid Query." << endl;
         return false;
     }
 
     if (vq.createCheck) {
-        handleCreateQuery(vq.query, vq.keys, vq.pkeyCheck, vq.fkeyCheck);
+        handleCreateQuery(vq.query, vq.keys);
     }
 
     if (vq.insertCheck) {
@@ -70,7 +71,7 @@ bool Database::processQuery(vector<string> words) {
 
 }
 
-bool Database::handleCreateQuery(pair<string, vector< pair<string, string>>> createQuery, map<string, string> keys, bool primaryKeyCheck, bool foreignKeyCheck) {
+bool Database::handleCreateQuery(pair<string, vector< pair<string, string>>> createQuery, map<string, string> keys) {
 
     auto current = table_list.head;
     while (current != NULL) {
@@ -82,17 +83,44 @@ bool Database::handleCreateQuery(pair<string, vector< pair<string, string>>> cre
         current = current->next;
     }
 
+    int count = 0;
+    Queue<Base_Column*> foreign_keys;
     for (const auto& entry : keys) {
-        std::cout << "Key: " << entry.first << ", Value: " << entry.second << "\n";
+        if(entry.first == "fk" + to_string(count)){
+            tuple<string, string, string> parse = parseFk(entry.second);
+            string col = get<0>(parse), ref_table = get<1>(parse), ref = get<2>(parse);
+
+            Table* target_table = getTable(ref_table);
+            if(target_table == NULL){
+                cout << "The reference table does not exist." << endl;
+                return false;
+            }
+
+            Base_Column* target = target_table->getColumn(ref);
+            if(target == NULL){
+                cout << "The reference column does not exist." << endl;
+                return false;
+            }
+
+            foreign_keys.enQueue(target);
+        }
     }
 
-    Table* table = new Table(createQuery, keys);
 
-    for (int i = 0; i < createQuery.second.size(); i++) {
-        cout << createQuery.second.at(i).first << "--" << createQuery.second.at(i).second << endl;
+    Table* table;
+    if(foreign_keys.size == 0){
+        table = new Table(createQuery, keys);
     }
+    else{
+        table = new Table(createQuery, keys, &foreign_keys);
+    }
+
+//    for (int i = 0; i < createQuery.second.size(); i++) {
+//        cout << createQuery.second.at(i).first << "--" << createQuery.second.at(i).second << endl;
+//    }
 
     table_list.insertToTail(table);
+
     return true;
 
 }
@@ -108,20 +136,19 @@ bool Database::handleInsertQuery(pair<string, vector<vector<pair<string, string>
 
     for (int i = 0; i < insertQuery.second.size(); i++) {
         Queue<Base_Node*> inputs;
+
         for (int j = 0; j < insertQuery.second.at(i).size(); j++) {
             //cout << insertQuery.second.at(i).at(j).first << ", " << insertQuery.second.at(i).at(j).second << endl;
             inputs.enQueue(convert(insertQuery.second.at(i).at(j).first, insertQuery.second.at(i).at(j).second));
         }
+
         table->addRow(inputs, table->col_head);
     }
 
     return true;
 }
 
-bool Database::handleSelectQuery(pair<string, vector<string>> selectQuery, pair<vector<tuple<string, string, string>>, string> whereQuery, bool whereCheck, pair<string, string> orderQuery, bool orderCheck, pair<pair<string, string>, pair<string, string>> joinSelect, bool joinCheck) {
-
-    /*cout << joinSelect.first.first << "--" << joinSelect.first.second << endl;
-    cout << joinSelect.second.first << "--" << joinSelect.second.second << endl;*/
+bool Database::handleSelectQuery(pair<string, vector<string>> selectQuery, pair<vector<tuple<string, string, string>>, string> whereQuery, bool whereCheck, pair<string, string> orderQuery, bool orderCheck, pair<pair<string, string>, pair<string, string>> joinQuery, bool joinCheck) {
 
     auto table = getTable(selectQuery.first);
 
@@ -132,6 +159,28 @@ bool Database::handleSelectQuery(pair<string, vector<string>> selectQuery, pair<
 
     Table* select = new Table(*table);
 
+    //join work
+    if(joinCheck){
+
+        auto join_table1 = select;
+        auto join_table2 = getTable(joinQuery.first.second);
+
+        if(join_table1 == NULL || join_table2 == NULL || !compareStrings(joinQuery.first.first, select->label)){
+            cout << "Invalid Selection Input." << endl;
+            return false;
+        }
+
+        Base_Column* join_col1 = join_table1->getColumn(joinQuery.second.first);
+        Base_Column* join_col2 = join_table2->getColumn(joinQuery.second.second);
+
+        if(join_col1 == NULL || join_col2 == NULL){
+            cout << "Invalid Selection Input." << endl;
+            return false;
+        }
+
+        select = select->join(join_col1, join_col2);
+    }
+
     //orderQuery work
     if (orderCheck) {
         Base_Column* curr_col = select->getColumn(orderQuery.first);
@@ -140,7 +189,6 @@ bool Database::handleSelectQuery(pair<string, vector<string>> selectQuery, pair<
             cout << "Invalid Order Query." << endl;
             return false;
         }
-
 
         if (compareStrings(orderQuery.second, "asc")) {
             curr_col->sort("asc");
@@ -151,7 +199,6 @@ bool Database::handleSelectQuery(pair<string, vector<string>> selectQuery, pair<
     }
 
     //whereQuery work
-
     if (whereCheck) {
 
         if (whereQuery.second == "or") {
@@ -655,6 +702,7 @@ void Database::printTables() {
 }
 
 int temp_rows;
+int temp_keys;
 
 void Database::pull(){
 
@@ -671,22 +719,31 @@ void Database::pull(){
         while(!in.atEnd()){
 
             pair<string, vector<pair<string, string>>> query1;
+            map<string, string> keys;
 
             in >> query1.first;
 
-            int num_of_cols, num_of_rows;
+            int num_of_cols, num_of_rows, num_of_keys;
             in >> num_of_cols;
             in >> num_of_rows;
 
             query1.second.resize(num_of_cols);
             in >> query1.second;
 
-            Table* t1 = new Table(query1);
+            in >> num_of_keys;
+            temp_keys = num_of_keys;
+            in >> keys;
+
+            handleCreateQuery(query1, keys);
+
+            auto current = table_list.head;
+            while(current->next != NULL){
+                current = current->next;
+            }
+
             temp_rows = num_of_rows;
+            Table* t1 = current->data;
             in >> *t1;
-
-            table_list.insertToTail(t1);
-
         }
 
         file.close();
@@ -794,3 +851,29 @@ Base_Node* Database::convert(string type, string value) {
     }
 
 }
+
+tuple<string, string, string> Database::parseFk(string s1) {
+    int i = 0;
+    tuple<std::string, std::string, std::string> t1;
+    string col, table, refCol;
+
+    while (s1[i] != '.') {
+        col = col + s1[i];
+        i++;
+    }
+    i++;
+    while (s1[i] != '(') {
+        table = table + s1[i];
+        i++;
+    }
+    i++;
+    while (s1[i] != ')') {
+        refCol = refCol + s1[i];
+        i++;
+    }
+
+    t1 = make_tuple(col, table, refCol);
+    return t1;
+
+}
+

@@ -2,6 +2,7 @@
 #define COLUMN_H
 
 #include <iostream>
+#include <QDebug>
 #include "Base_Column.h"
 #include "Node.h"
 
@@ -21,7 +22,7 @@ public:
     Column<T>(string type, string name);
     ~Column<T>();
 
-    Column<T>* getCopy();
+    virtual Column<T>* getCopy();
     virtual bool insertAtTail(Base_Node* node);
     virtual bool insertAtTail(T data);
 

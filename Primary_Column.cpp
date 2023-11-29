@@ -31,6 +31,22 @@ bool Primary_Column<T>::insertAtTail(Base_Node* data) {
 
 }
 
+template <class T>
+Primary_Column<T>* Primary_Column<T>::getCopy(){
+
+    Primary_Column<T>* copy = new Primary_Column<T>(Column<T>::type, Column<T>::label);
+
+    Node<T>* current = Column<T>::head;
+    while (current != NULL) {
+        copy->insertAtTail(current->getCopy());
+
+        current = current->down;
+    }
+
+    return copy;
+
+}
+
 template class Primary_Column<int>;
 template class Primary_Column<char>;
 template class Primary_Column<string>;

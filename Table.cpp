@@ -1,12 +1,12 @@
 #include "Table.h"
 
 Table::Table(){
-    num_of_cols = num_of_rows = 0;
+    num_of_cols = num_of_rows = num_of_keys = 0;
     col_head = NULL;
 }
 
 Table::Table(string label) {
-    num_of_cols = num_of_rows = 0;
+    num_of_cols = num_of_rows = num_of_keys = 0;
     this->label = label;
 
     metadata.first = label;
@@ -16,23 +16,27 @@ Table::Table(string label) {
 Table::Table(const Table& table) {
 
     label = table.label;
+    keys = table.keys;
     col_head = NULL;
 
     Base_Column* curr_col = table.col_head;
+
     while (curr_col != NULL) {
         addColumn(curr_col);
-
         curr_col = curr_col->next_col;
     }
 
 }
 
-Table::Table(pair<string, vector<pair<string, string>>> query, map<string, string> keys) {
+Table::Table(pair<string, vector<pair<string, string>>> query, map<string, string> keys, Queue<Base_Column*>* references) {
     metadata = query;
     this->keys = keys;
     num_of_cols = num_of_rows = 0;
 
+    num_of_keys = keys.size();
+
     label = query.first;
+    int count = 0;
 
     Base_Column* curr = col_head;
 
@@ -46,9 +50,14 @@ Table::Table(pair<string, vector<pair<string, string>>> query, map<string, strin
             if (type == "float") {
                 bool check = false;
                 for (const auto& key : keys) {
-                    if (query.second.at(i).second == key.second) {
+                    if (query.second.at(i).second.substr(0, query.second.at(i).second.find('.')) == key.second.substr(0, key.second.find('.'))) {
                         if (key.first == "pk") {
                             col_head = new Primary_Column<float>(type, query.second.at(i).second);
+                        }
+                        else if(key.first == ("fk" + to_string(count))){
+                            count++;
+                            col_head = new Foreign_Column<float>(type, query.second.at(i).second, references->peek());
+                            references->deQueue();
                         }
                         check = true;
                     }
@@ -60,9 +69,14 @@ Table::Table(pair<string, vector<pair<string, string>>> query, map<string, strin
             else if (type == "class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >") {
                 bool check = false;
                 for (const auto& key : keys) {
-                    if (query.second.at(i).second == key.second) {
+                    if (query.second.at(i).second.substr(0, query.second.at(i).second.find('.')) == key.second.substr(0, key.second.find('.'))) {
                         if (key.first == "pk") {
                             col_head = new Primary_Column<string>(type, query.second.at(i).second);
+                        }
+                        else if(key.first == ("fk" + to_string(count))){
+                            count++;
+                            col_head = new Foreign_Column<string>(type, query.second.at(i).second, references->peek());
+                            references->deQueue();
                         }
                         check = true;
                     }
@@ -74,9 +88,14 @@ Table::Table(pair<string, vector<pair<string, string>>> query, map<string, strin
             else if (type == "char") {
                 bool check = false;
                 for (const auto& key : keys) {
-                    if (query.second.at(i).second == key.second) {
+                    if (query.second.at(i).second.substr(0, query.second.at(i).second.find('.')) == key.second.substr(0, key.second.find('.'))) {
                         if (key.first == "pk") {
                             col_head = new Primary_Column<char>(type, query.second.at(i).second);
+                        }
+                        else if(key.first == ("fk" + to_string(count))){
+                            count++;
+                            col_head = new Foreign_Column<char>(type, query.second.at(i).second, references->peek());
+                            references->deQueue();
                         }
                         check = true;
                     }
@@ -88,9 +107,14 @@ Table::Table(pair<string, vector<pair<string, string>>> query, map<string, strin
             else if (type == "bool") {
                 bool check = false;
                 for (const auto& key : keys) {
-                    if (query.second.at(i).second == key.second) {
+                    if (query.second.at(i).second.substr(0, query.second.at(i).second.find('.')) == key.second.substr(0, key.second.find('.'))) {
                         if (key.first == "pk") {
                             col_head = new Primary_Column<bool>(type, query.second.at(i).second);
+                        }
+                        else if(key.first == ("fk" + to_string(count))){
+                            count++;
+                            col_head = new Foreign_Column<bool>(type, query.second.at(i).second, references->peek());
+                            references->deQueue();
                         }
                         check = true;
                     }
@@ -102,9 +126,14 @@ Table::Table(pair<string, vector<pair<string, string>>> query, map<string, strin
             else {			//for int case. Removing this gives an error.
                 bool check = false;
                 for (const auto& key : keys) {
-                    if (query.second.at(i).second == key.second) {
+                    if (query.second.at(i).second.substr(0, query.second.at(i).second.find('.')) == key.second.substr(0, key.second.find('.'))) {
                         if (key.first == "pk") {
                             col_head = new Primary_Column<int>(type, query.second.at(i).second);
+                        }
+                        else if(key.first == ("fk" + to_string(count))){
+                            count++;
+                            col_head = new Foreign_Column<int>(type, query.second.at(i).second, references->peek());
+                            references->deQueue();
                         }
                         check = true;
                     }
@@ -127,9 +156,14 @@ Table::Table(pair<string, vector<pair<string, string>>> query, map<string, strin
             if (type == "float") {
                 bool check = false;
                 for (const auto& key : keys) {
-                    if (query.second.at(i).second == key.second) {
+                    if (query.second.at(i).second.substr(0, query.second.at(i).second.find('.')) == key.second.substr(0, key.second.find('.'))) {
                         if (key.first == "pk") {
                             curr->next_col = new Primary_Column<float>(type, query.second.at(i).second);
+                        }
+                        else if(key.first == ("fk" + to_string(count))){
+                            count++;
+                            curr->next_col = new Foreign_Column<float>(type, query.second.at(i).second, references->peek());
+                            references->deQueue();
                         }
                         check = true;
                     }
@@ -141,9 +175,14 @@ Table::Table(pair<string, vector<pair<string, string>>> query, map<string, strin
             else if (type == "class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >") {
                 bool check = false;
                 for (const auto& key : keys) {
-                    if (query.second.at(i).second == key.second) {
+                    if (query.second.at(i).second.substr(0, query.second.at(i).second.find('.')) == key.second.substr(0, key.second.find('.'))) {
                         if (key.first == "pk") {
                             curr->next_col = new Primary_Column<string>(type, query.second.at(i).second);
+                        }
+                        else if(key.first == ("fk" + to_string(count))){
+                            count++;
+                            curr->next_col = new Foreign_Column<string>(type, query.second.at(i).second, references->peek());
+                            references->deQueue();
                         }
                         check = true;
                     }
@@ -155,9 +194,14 @@ Table::Table(pair<string, vector<pair<string, string>>> query, map<string, strin
             else if (type == "char") {
                 bool check = false;
                 for (const auto& key : keys) {
-                    if (query.second.at(i).second == key.second) {
+                    if (query.second.at(i).second.substr(0, query.second.at(i).second.find('.')) == key.second.substr(0, key.second.find('.'))) {
                         if (key.first == "pk") {
                             curr->next_col = new Primary_Column<char>(type, query.second.at(i).second);
+                        }
+                        else if(key.first == ("fk" + to_string(count))){
+                            count++;
+                            curr->next_col = new Foreign_Column<char>(type, query.second.at(i).second, references->peek());
+                            references->deQueue();
                         }
                         check = true;
                     }
@@ -169,9 +213,14 @@ Table::Table(pair<string, vector<pair<string, string>>> query, map<string, strin
             else if (type == "bool") {
                 bool check = false;
                 for (const auto& key : keys) {
-                    if (query.second.at(i).second == key.second) {
+                    if (query.second.at(i).second.substr(0, query.second.at(i).second.find('.')) == key.second.substr(0, key.second.find('.'))) {
                         if (key.first == "pk") {
                             curr->next_col = new Primary_Column<bool>(type, query.second.at(i).second);
+                        }
+                        else if(key.first == ("fk" + to_string(count))){
+                            count++;
+                            curr->next_col = new Foreign_Column<bool>(type, query.second.at(i).second, references->peek());
+                            references->deQueue();
                         }
                         check = true;
                     }
@@ -183,9 +232,14 @@ Table::Table(pair<string, vector<pair<string, string>>> query, map<string, strin
             else {			//for int case. Removing this gives an error.
                 bool check = false;
                 for (const auto& key : keys) {
-                    if (query.second.at(i).second == key.second) {
+                   if (query.second.at(i).second.substr(0, query.second.at(i).second.find('.')) == key.second.substr(0, key.second.find('.'))) {
                         if (key.first == "pk") {
                             curr->next_col = new Primary_Column<int>(type, query.second.at(i).second);
+                        }
+                        else if(key.first == ("fk" + to_string(count))){
+                            count++;
+                            curr->next_col = new Foreign_Column<int>(type, query.second.at(i).second, references->peek());
+                            references->deQueue();
                         }
                         check = true;
                     }
@@ -202,7 +256,6 @@ Table::Table(pair<string, vector<pair<string, string>>> query, map<string, strin
     }
 
 }
-
 
 void Table::display() {
 
@@ -356,7 +409,6 @@ void Table::addColumn(Base_Column* col) {
         }
 
         curr_col->next_col = col->getCopy();
-
         curr_col->next_col->prev_col = curr_col;
 
         Base_Node* node = curr_col->getHead();
@@ -599,12 +651,12 @@ Table* Table::join(Base_Column* foreign, Base_Column* reference) {
         curr_col = curr_col->next_col;
     }
 
-    return t1;
+    delete this;
 
+    return t1;
 }
 
 bool Table::addRow(Queue<Base_Node*> inputs, Base_Column* current, int counter) {
-
     string type = inputs.peek()->getType();
 
     if (type == "i") {
@@ -655,7 +707,6 @@ bool Table::addRow(Queue<Base_Node*> inputs, Base_Column* current, int counter) 
 }
 
 bool Table::addRow(Base_Node* data, Base_Column* current, int counter) {
-
     string type = data->getType();
 
     if (type == "i") {

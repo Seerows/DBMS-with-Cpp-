@@ -14,16 +14,25 @@ void DatabaseScreen::on_pushButton_clicked(){
 
     QString text;
     text = ui->textEdit->toPlainText();
-    QStringList textLines = text.split("\n");
-    Queue<std::string> input;
 
-    for(int i=0; i<textLines.size(); i++){
-        input.enQueue(QString(textLines[i]).toStdString());
+    QRegularExpression regex("(?<=;)");
+
+    QStringList queries = text.split(regex);
+    queries.removeAll("");
+
+    for(int i = 0; i<queries.size(); i++){
+        QStringList textLines = queries.at(i).split("\n");
+
+        Queue<std::string> input;
+
+        for(int i=0; i<textLines.size(); i++){
+            input.enQueue(QString(textLines[i]).toStdString());
+        }
+
+        vector<string> words = g1.GetWords(input);
+        db.processQuery(words);
     }
 
-    vector<string> words = g1.GetWords(input);
-    db.processQuery(words);
-    db.printTables();
 
 }
 

@@ -4,7 +4,7 @@ bool isAlphaCheck(std::string s) {
     for (int i = 0; i < s.length(); i++) {
         if (!(s[i] >= 65 && s[i] <= 90) && !(s[i] >= 97 && s[i] <= 122) && !(s[i]>=48 && s[i]<=58)) {
             check = false;
-            std::cout << "Error, column or table name cannot contain any special character." << std::endl;
+            //std::cout << "Error, column or table name cannot contain any special character." << std::endl;
         }
     }
     return check;
@@ -69,31 +69,6 @@ std::string getDataType(std::string s1) {
 
 }
 
-std::tuple<std::string, std::string, std::string> validateQuery::parseFk(std::string s1) {
-    int i = 0;
-    std::tuple<std::string, std::string, std::string> t1;
-    std::string col;
-    std::string table;
-    std::string refCol;
-    while (s1[i] != '.') {
-        col = col + s1[i];
-        i++;
-    }
-    i++;
-    while (s1[i] != '(') {
-        table = table + s1[i];
-        i++;
-    }
-    i++;
-    while (s1[i] != ')') {
-        refCol = refCol + s1[i];
-        i++;
-    }
-
-    t1 = make_tuple(col, table, refCol);
-    return t1;
-
-}
 validateQuery::validateQuery() {
     createCheck = false;
     insertCheck = false;
