@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icon.png</file>
+        <file>createDatabaseScreen.jpg</file>
+        <file>loginDatabaseScreen.jpg</file>
+        <file>DatabaseScreen.jpg</file>
+    </qresource>
+</RCC>
