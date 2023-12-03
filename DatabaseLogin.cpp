@@ -107,6 +107,7 @@ void DatabaseLogIn::on_pushButton_3_clicked()
             obj->setName(databaseName);
             close();
             obj->display();
+            obj->showMaximized();
             obj->show();
             bool value = 1;
             emit closeSignal(value);
@@ -125,5 +126,11 @@ void DatabaseLogIn::on_pushButton_3_clicked()
         ui->label_error->hide();
     }
 
+}
+
+
+void DatabaseLogIn::on_pushButton_4_clicked()
+{
+    close();
 }
 

@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true"/>
+   <string notr="true">background-color:#333333;</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QTextEdit" name="textEdit">
@@ -27,7 +27,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: white;</string>
+     <string notr="true">background-color: #4D6986;</string>
     </property>
    </widget>
    <widget class="QFrame" name="frame">
@@ -36,11 +36,11 @@
       <x>0</x>
       <y>99</y>
       <width>200</width>
-      <height>451</height>
+      <height>691</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true"/>
+     <string notr="true">background-color: #1D3A57;</string>
     </property>
     <property name="frameShape">
      <enum>QFrame::StyledPanel</enum>
@@ -58,18 +58,29 @@
       <height>501</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: #264F78;
+font: 700 10pt &quot;Segoe UI&quot;;
+QTableWidget::item {
+    color: white;
+}</string>
+    </property>
    </widget>
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
       <x>200</x>
       <y>250</y>
-      <width>80</width>
-      <height>31</height>
+      <width>41</width>
+      <height>41</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">image: url(:/compileLogo.png);
+color: black;</string>
+    </property>
     <property name="text">
-     <string>Run</string>
+     <string/>
     </property>
     <property name="shortcut">
      <string>F5</string>
@@ -85,7 +96,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">
+     <string notr="true">color: white;
 font: 700 20pt &quot;Segoe UI&quot;;</string>
     </property>
     <property name="text">

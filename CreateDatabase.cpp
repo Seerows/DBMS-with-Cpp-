@@ -89,17 +89,18 @@ void CreateDatabase::on_buttonBox_accepted()
             if(ui->input_userPassword->text() == ui->input_userPassword_2->text())
             {
                 setVisible(false);
-                emit enteredDatabaseName(ui->input_databaseName->text().toLower(), ui->input_userName->text().toLower());
-                Database obj(QString(ui->input_databaseName->text().toLower()).toStdString(), QString(ui->input_userName->text().toLower()).toStdString(), QString(ui->input_userPassword->text()).toStdString());
-                obj.username = QString(ui->input_userName->text().toLower()).toStdString();
+                emit enteredDatabaseName(ui->input_databaseName->text(), ui->input_userName->text());
+                Database obj(QString(ui->input_databaseName->text()).toStdString(), QString(ui->input_userName->text()).toStdString(), QString(ui->input_userPassword->text()).toStdString());
+                obj.username = QString(ui->input_userName->text()).toStdString();
                 obj.password = QString(ui->input_userPassword->text()).toStdString();
                 qDebug() << obj.username;
                 qDebug() << obj.password;
                 obj.commit();
-                //close();
+                close();
             }
             else
             {
+                setVisible(true);
                 ui->label_error1->hide();
                 ui->label_error2->hide();
                 ui->label_error3->show();
@@ -107,6 +108,7 @@ void CreateDatabase::on_buttonBox_accepted()
         }
         else
         {
+            setVisible(true);
             ui->label_error1->hide();
             ui->label_error2->show();
             ui->label_error3->hide();
@@ -114,12 +116,12 @@ void CreateDatabase::on_buttonBox_accepted()
     }
     else
     {
+        setVisible(true);
         qDebug() << "IN else block";
         ui->label_error1->show();
         ui->label_error2->hide();
         ui->label_error3->hide();
     }
-    setVisible(true);
 }
 
 void CreateDatabase::on_pushButton_clicked()

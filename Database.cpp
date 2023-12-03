@@ -6,6 +6,7 @@ Database::Database(Table& table1, Table& table2) {
     table_list.insertToTail(&table1);
     table_list.insertToTail(&table2);
 
+    status.resize(11);
 }
 
 Database::Database(string name){
@@ -15,6 +16,8 @@ Database::Database(string name){
 
 Database::Database(){
     num_of_tables = 0;
+
+    status.resize(11);
 }
 
 Database::Database(string name, string username, string password) {
@@ -23,6 +26,8 @@ Database::Database(string name, string username, string password) {
     this->username = username;
     this->password = password;
     num_of_tables = 0;
+
+    status.resize(11);
 
     //Database::pull() should be used after this to pull contents from file :)
 }
@@ -33,17 +38,22 @@ void Database::addTable(Table* table) {
 
 }
 
-Table* Database::processQuery(vector<string> words) {
+bool Database::processQuery(vector<string> words) {
     qDebug() << "\nProcessing...";
+
+    for(int i = 0; i<status.size(); i++){
+        status.at(i) = false;
+    }
 
     validateQuery vq;
     bool validate = vq.validate(words);
-    qDebug() << "Valid.";
+    qDebug() << "Valid Query.";
     temp_select = NULL;
 
     if (!validate) {
+        status.at(0) = true;
         cout << "Invalid Query." << endl;
-        return NULL;
+        return false;
     }
 
     if (vq.createCheck) {
@@ -79,8 +89,7 @@ Table* Database::processQuery(vector<string> words) {
     }
 
     qDebug() << "Processed Successfully!\n";
-    return temp_select;
-
+    return true;
 }
 
 bool Database::handleCreateQuery(pair<string, vector< pair<string, string>>> createQuery, map<string, string> keys) {
@@ -88,6 +97,7 @@ bool Database::handleCreateQuery(pair<string, vector< pair<string, string>>> cre
     auto current = table_list.head;
     while (current != NULL) {
         if (compareStrings(current->data->label, createQuery.first)) {
+            status.at(1) = true;
             cout << createQuery.first << " table already exists." << endl;
             return false;
         }
@@ -104,12 +114,14 @@ bool Database::handleCreateQuery(pair<string, vector< pair<string, string>>> cre
 
             Table* target_table = getTable(ref_table);
             if(target_table == NULL){
+                status.at(2) = true;
                 cout << "The reference table does not exist." << endl;
                 return false;
             }
 
             Base_Column* target = target_table->getColumn(ref);
             if(target == NULL){
+                status.at(3) = true;
                 cout << "The reference column does not exist." << endl;
                 return false;
             }
@@ -142,6 +154,7 @@ bool Database::handleInsertQuery(pair<string, vector<vector<pair<string, string>
     auto table = getTable(insertQuery.first);
 
     if (table == NULL) {
+        status.at(4) = true;
         cout << "Invalid Insertion Input." << endl;
         return false;
     }
@@ -165,6 +178,7 @@ bool Database::handleSelectQuery(pair<string, vector<string>> selectQuery, pair<
     auto table = getTable(selectQuery.first);
 
     if (table == NULL) {
+        status.at(5) = true;
         qDebug() << "Invalid Selection Input.";
         return false;
     }
@@ -178,6 +192,7 @@ bool Database::handleSelectQuery(pair<string, vector<string>> selectQuery, pair<
         auto join_table2 = getTable(joinQuery.first.second);
 
         if(join_table1 == NULL || join_table2 == NULL || !compareStrings(joinQuery.first.first, select->label)){
+            status.at(5) = true;
             cout << "Invalid Selection Input." << endl;
             return false;
         }
@@ -186,6 +201,7 @@ bool Database::handleSelectQuery(pair<string, vector<string>> selectQuery, pair<
         Base_Column* join_col2 = join_table2->getColumn(joinQuery.second.second);
 
         if(join_col1 == NULL || join_col2 == NULL){
+            status.at(5) = true;
             cout << "Invalid Selection Input." << endl;
             return false;
         }
@@ -241,6 +257,7 @@ bool Database::handleSelectQuery(pair<string, vector<string>> selectQuery, pair<
         Base_Column* curr_col = select->getColumn(orderQuery.first);
 
         if (curr_col == NULL) {
+            status.at(6) = true;
             cout << "Invalid Order Query." << endl;
             return false;
         }
@@ -286,18 +303,13 @@ bool Database::handleSelectQuery(pair<string, vector<string>> selectQuery, pair<
 
 bool Database::handleUpdateQuery(pair<string, vector<pair<string, string>>> updateQuery, pair<vector<tuple<string, string, string>>, string> whereQuery, bool whereCheck) {
 
-    /*
-    UPDATE your_table_name
-    SET your_column = your_value
-    WHERE your_condition;
-    */
-
     /*for (int i = 0; i < whereQuery.size(); i++) {
         cout << get<0>(whereQuery.at(i)) << "--" << get<1>(whereQuery.at(i)) << "--" << get<2>(whereQuery.at(i)) << endl;
     }*/
 
     auto table = getTable(updateQuery.first);
     if (table == NULL) {
+        status.at(7) = true;
         cout << "Invalid Updation Input." << endl;
         return false;
     }
@@ -308,6 +320,7 @@ bool Database::handleUpdateQuery(pair<string, vector<pair<string, string>>> upda
 
             Base_Column* affected = table->getColumn(updateQuery.second.at(i).first);
             if (affected == NULL) {
+                status.at(7) = true;
                 cout << "Invalid Updation Input." << endl;
                 return false;
             }
@@ -339,6 +352,7 @@ bool Database::handleUpdateQuery(pair<string, vector<pair<string, string>>> upda
                 Base_Column* affected = table->getColumn(updateQuery.second.at(i).first);
 
                 if (col == NULL || affected == NULL) {
+                    status.at(7) = true;
                     cout << "Invalid Updation Input." << endl;
                     return false;
                 }
@@ -422,6 +436,7 @@ bool Database::handleUpdateQuery(pair<string, vector<pair<string, string>>> upda
 
             Base_Column* affected = table->getColumn(updateQuery.second.at(i).first);
             if (affected == NULL) {
+                status.at(7) = true;
                 cout << "Invalid Updation Input." << endl;
                 return false;
             }
@@ -442,6 +457,7 @@ bool Database::handleUpdateQuery(pair<string, vector<pair<string, string>>> upda
                 affected_head = affected->getHead();
 
                 if (col == NULL) {
+                    status.at(7) = true;
                     cout << "Invalid Updation Input." << endl;
                     return false;
                 }
@@ -455,7 +471,6 @@ bool Database::handleUpdateQuery(pair<string, vector<pair<string, string>>> upda
                         queue.remove(affected_head);
                     }
                     else if ((std::get<1>(inverse.first.at(j)) == "!=") && (*head != *target)) {
-                        qDebug() << "INSIDE" << head->getValue() << affected_head->getValue();
                         queue.remove(affected_head);
                     }
                     else if ((std::get<1>(inverse.first.at(j)) == ">") && (*head > *target)) {
@@ -474,14 +489,6 @@ bool Database::handleUpdateQuery(pair<string, vector<pair<string, string>>> upda
                     affected_head = affected_head->getDown();
                     head = head->getDown();
                 }
-
-                qDebug() << "Contents:";
-                Queue<Base_Node*> new_queue = queue;
-                while(new_queue.size != 0){
-                    qDebug() << new_queue.peek()->getValue();
-                    new_queue.deQueue();
-                }
-                qDebug() << "done\n";
 
             }
 
@@ -506,6 +513,7 @@ bool Database::handleAlterQuery(pair<string, vector<pair<string, string>>> alter
     auto table = getTable(alterQuery.first);
 
     if (table == NULL) {
+        status.at(8) = true;
         cout << "Invalid Alteration Input." << endl;
         return false;
     }
@@ -533,6 +541,7 @@ bool Database::handleDeleteQuery(string deleteQuery, pair<vector<tuple<string, s
     auto table = getTable(deleteQuery);
 
     if (table == NULL) {
+        status.at(8) = true;
         cout << "Invalid Deletion Input." << endl;
         return false;
     }
@@ -594,6 +603,7 @@ bool Database::handleDropQuery(string dropTableQuery) {
     auto table = getTable(dropTableQuery);
 
     if (table == NULL) {
+        status.at(9) = true;
         cout << "Invalid Drop Query.\n";
         return false;
     }
@@ -609,6 +619,7 @@ bool Database::whereDeleteUtil(Table* table, pair<vector<tuple<string, string, s
     for (int i = 0; i < whereQuery.first.size(); i++) {
         Base_Column* col = table->getColumn(get<0>(whereQuery.first.at(i)));
         if (col == NULL) {
+            status.at(10) = true;
             cout << "Invalid Where Query." << endl;
             return false;
         }
@@ -653,6 +664,7 @@ bool Database::whereAddUtil(Table*& table, pair<vector<tuple<string, string, str
         Base_Column* col = table->getColumn(get<0>(whereQuery.first.at(i)));
 
         if (col == NULL) {
+            status.at(10) = true;
             cout << "Invalid Where Query." << endl;
             return false;
         }

@@ -14,14 +14,13 @@
    <string>MainScreen</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">
-</string>
+   <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QPushButton" name="btn_createDatabase">
     <property name="geometry">
      <rect>
-      <x>750</x>
+      <x>740</x>
       <y>150</y>
       <width>150</width>
       <height>35</height>
@@ -62,8 +61,8 @@ color: white
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>620</x>
-      <y>0</y>
+      <x>630</x>
+      <y>20</y>
       <width>381</width>
       <height>91</height>
      </rect>

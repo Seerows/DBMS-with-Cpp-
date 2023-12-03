@@ -4,5 +4,6 @@
         <file>createDatabaseScreen.jpg</file>
         <file>loginDatabaseScreen.jpg</file>
         <file>DatabaseScreen.jpg</file>
+        <file>compileLogo.png</file>
     </qresource>
 </RCC>

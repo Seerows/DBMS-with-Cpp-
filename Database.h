@@ -46,6 +46,7 @@ public:
     string password;
     int num_of_tables;
     Table* temp_select;
+    vector<bool> status;
 
     LinkedList<Table*> table_list;
 
@@ -54,7 +55,7 @@ public:
     void addTable(Table* table);
     void printTables();
 
-    Table* processQuery(vector<std::string> words);
+    bool processQuery(vector<std::string> words);
     Table* getTable(string label);
 
     //put in Dependencies.cpp later

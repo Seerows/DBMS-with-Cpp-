@@ -135,14 +135,10 @@ void MainScreen::displayDatabaseName()
     //        qDebug() << item;
     //    }
 
-    qDebug() << "Data 1 Count" << data1.count();
-    qDebug() << "Data 2 Count" << data2.count();
-
     for(int i=count; i<data1.count(); i++)
     {
         if(nextline > 3)
         {
-            qDebug() << "NextLine";
             nextline = 0;
             x++;
             y=0;
@@ -207,7 +203,6 @@ void MainScreen::handleLoginSuccess(bool value)
 
     if(value == 1)
     {
-        qDebug() << "In main screen";
         close();
     }
 

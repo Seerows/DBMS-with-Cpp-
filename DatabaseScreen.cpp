@@ -21,10 +21,17 @@ DatabaseScreen::DatabaseScreen(QWidget *parent) :
         "QPushButton:hover {background-color: #f4c2c2; color: white; font-weight: bold}"
     );
 
-    ui->pushButton->setStyleSheet(
-        "QPushButton {background-color: blue; color: black; font-weight: bold}"
-        "QPushButton:hover {background-color: #00c3e32; color: white; font-weight: bold}"
-        );
+    // ui->pushButton->setStyleSheet(
+    //     "QPushButton {background-color: blue; color: black; font-weight: bold}"
+    //     "QPushButton:hover {background-color: #00c3e32; color: white; font-weight: bold}"
+    //     );
+
+    QString inputStyling = "QTextEdit {font-weight: bold; color: white}";
+
+    ui->textEdit->setStyleSheet(inputStyling);
+
+
+    //ui->tableWidget->setStyleSheet("QTableWidget {background-color: #4682B4, color: white}");
 }
 
 
@@ -84,12 +91,20 @@ void DatabaseScreen::display()
 
     for(int i=0; i<tableName.count(); i++)
     {
-        temp->data->display();
         connect(&tableButton[i], &QPushButton::clicked, [temp, this](){
             displayTable(temp->data);
         });
 
         temp = temp->next;
+    }
+
+    for(int i=0; i<tableName.count(); i++)
+    {
+        tableButton[i].setStyleSheet(
+            "QPushButton {background-color: black; color: white; font-weight: bold; font-size: 25; border: 2px solid black;}"
+            "QPushButton:hover {background-color : white; color: black;font-weight: bold; font-size: 25; border: 2px solid black; border-radius: 3px;}"
+
+            );
     }
 
 }
@@ -113,8 +128,6 @@ void DatabaseScreen::on_pushButton_clicked()
     QStringList queries = text.split(regex);
     queries.removeAll("");
 
-    Table* select;
-
     for(int i = 0; i<queries.size(); i++){
         QStringList textLines = queries.at(i).split("\n");
 
@@ -125,15 +138,16 @@ void DatabaseScreen::on_pushButton_clicked()
         }
 
         vector<string> words = g1.GetWords(input);
-        select = db.processQuery(words);
+        db.processQuery(words);
+
+        if(db.temp_select != NULL){
+            qDebug() << "Creating with " << db.temp_select->num_of_cols << " cols";
+            createTable(db.temp_select);
+            delete db.temp_select;
+            qDebug() << "Created";
+        }
     }
 
-    if(select != NULL){
-        qDebug() << "Creating with " << select->num_of_cols << " cols";
-        createTable(select);
-        delete select;
-        qDebug() << "Created";
-    }
 
     display();
 
@@ -160,15 +174,27 @@ void DatabaseScreen::createTable(Table *obj)
         {
             QTableWidgetItem *item = new QTableWidgetItem;
             item->setText(QString::fromStdString((*obj)[j][i].getValue()));
+
+            item->setForeground(QColor(Qt::white));
+
+            //ui->tableWidget->setStyleSheet("QTableWidget::item { background-color: black; }");
+
             ui->tableWidget->setItem(i, j, item);
         }
     }
+    ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    // ui->tableWidget->setStyleSheet(
+    //     "QTableWidget::item {color: white;}"
+    //     );
+
+
 }
 
 void DatabaseScreen::on_pushButton_exit_clicked()
 {
-    close();
     MainScreen *obj = new MainScreen;
+    obj->showMaximized();
     obj->show();
+    close();
 }
 
