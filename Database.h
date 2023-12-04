@@ -33,13 +33,13 @@ private:
     bool handleJoin(pair<pair<string, string>, pair<string, string>> joinQuery, bool joinCheck);
     bool whereDeleteUtil(Table* table, pair<vector<tuple<string, string, string>>, string> whereQuery);
     bool whereAddUtil(Table*& table, pair<vector<tuple<string, string, string>>, string> whereQuery);
-    //Queue<Base_Column*> getReferenceColumns(map<string, string> keys);
 
 public:
     Database();
     Database(string name);
     Database(string name, string username, string password);
     Database(Table& table1, Table& table2);
+    ~Database();
 
     string name;
     string username;

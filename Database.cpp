@@ -86,6 +86,7 @@ bool Database::processQuery(vector<string> words) {
 
     if(vq.commitCheck){
         commit();
+        qDebug() << "Commited.";
     }
 
     qDebug() << "Processed Successfully!\n";
@@ -167,7 +168,13 @@ bool Database::handleInsertQuery(pair<string, vector<vector<pair<string, string>
             inputs.enQueue(convert(insertQuery.second.at(i).at(j).first, insertQuery.second.at(i).at(j).second));
         }
 
-        table->addRow(inputs, table->col_head);
+        if(inputs.size == 1){
+            table->addRow(inputs.peek(), table->col_head, 0);
+        }
+        else{
+            table->addRow(inputs, table->col_head);
+        }
+
     }
 
     return true;
@@ -905,3 +912,14 @@ tuple<string, string, string> Database::parseFk(string s1) {
 
 }
 
+Database::~Database(){
+
+    auto current = table_list.head;
+
+    while(current != NULL){
+        auto temp = current->next;
+        delete current;
+        current = temp;
+    }
+
+}

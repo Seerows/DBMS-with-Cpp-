@@ -19,7 +19,7 @@ DatabaseScreen::DatabaseScreen(QWidget *parent) :
     ui->pushButton_exit->setStyleSheet(
         "QPushButton {background-color: red; color: black; font-weight: bold}"
         "QPushButton:hover {background-color: #f4c2c2; color: white; font-weight: bold}"
-    );
+        );
 
     // ui->pushButton->setStyleSheet(
     //     "QPushButton {background-color: blue; color: black; font-weight: bold}"
@@ -32,6 +32,8 @@ DatabaseScreen::DatabaseScreen(QWidget *parent) :
 
 
     //ui->tableWidget->setStyleSheet("QTableWidget {background-color: #4682B4, color: white}");
+
+    tableButton = NULL;
 }
 
 
@@ -68,31 +70,32 @@ void DatabaseScreen::display()
     {
         tableName.append(QString::fromStdString(temp->data->label));
         i++;
-//        qDebug() << temp->data->label;
-//        temp->data->display();
-//        qDebug() << "Cols" <<temp->data->num_of_cols;
-//        qDebug() << "Rows" << temp->data->num_of_rows;
         temp = temp->next;
+    }
+
+    if(tableButton != NULL){
+        delete[] tableButton;
+        tableButton = NULL;
     }
 
     tableButton = new QPushButton[tableName.count()];
 
-    for(int i=count; i<tableName.count(); i++)
+    for(int i=0; i<tableName.count(); i++)
     {
         layout->setVerticalSpacing(10);
         tableButton[i].setParent(ui->frame);
         tableButton[i].setText(tableName[i]);
         layout->addWidget(&tableButton[i], x++, y);
-        count++;
+        //count++;
     }
 
     temp = d1.table_list.head;
-    i=0;
 
     for(int i=0; i<tableName.count(); i++)
     {
-        connect(&tableButton[i], &QPushButton::clicked, [temp, this](){
-            displayTable(temp->data);
+        auto data = temp->data;
+        connect(&tableButton[i], &QPushButton::clicked, [data, this](){
+            displayTable(data);
         });
 
         temp = temp->next;
@@ -197,4 +200,3 @@ void DatabaseScreen::on_pushButton_exit_clicked()
     obj->show();
     close();
 }
-

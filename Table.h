@@ -27,7 +27,7 @@ public:
 
     Table();
     Table(string label);
-    Table(pair<string, vector<pair<string, string>>> query, map<string, string> keys = { {"?", "?"} }, Queue<Base_Column*>* references = NULL);
+    Table(pair<string, vector<pair<string, string>>> query, map<string, string> keys = map<string, string>(), Queue<Base_Column*>* references = NULL);
 
     Table(const Table& table);
     ~Table();

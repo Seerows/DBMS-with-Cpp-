@@ -59,8 +59,6 @@ bool DatabaseLogIn::verify(QString inputName, QString inputPass)
 
         in >> userName;
         in >> password;
-        qDebug() << userName;
-        qDebug() << password;
         file.close();
     }
     else
