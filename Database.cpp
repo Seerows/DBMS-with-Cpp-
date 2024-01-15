@@ -47,7 +47,6 @@ bool Database::processQuery(vector<string> words) {
 
     validateQuery vq;
     bool validate = vq.validate(words);
-    qDebug() << "Valid Query.";
     temp_select = NULL;
 
     if (!validate) {
@@ -218,12 +217,6 @@ bool Database::handleSelectQuery(pair<string, vector<string>> selectQuery, pair<
 
     //whereQuery work
     if (whereCheck) {
-
-        qDebug() << "WHERE QUERY";
-        qDebug() << get<0>(whereQuery.first.at(0));
-        qDebug() << get<1>(whereQuery.first.at(0));
-        qDebug() << get<2>(whereQuery.first.at(0));
-        qDebug() << whereQuery.second;
 
         if (whereQuery.second == "or") {
             whereAddUtil(select, whereQuery);

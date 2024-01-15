@@ -27,7 +27,6 @@ SOURCES += \
     displaytable.cpp \
     getWords.cpp \
     main.cpp \
-    mainwindow.cpp \
     validateQuery.cpp
 
 HEADERS += \
@@ -48,7 +47,6 @@ HEADERS += \
     Table.h \
     displaytable.h \
     getWords.h \
-    mainwindow.h \
     validateQuery.h
 
 FORMS += \
@@ -56,8 +54,7 @@ FORMS += \
     DatabaseLogin.ui \
     DatabaseScreen.ui \
     MainScreen.ui \
-    displaytable.ui \
-    mainwindow.ui
+    displaytable.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

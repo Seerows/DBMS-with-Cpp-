@@ -7,7 +7,7 @@ Foreign_Column<T>::Foreign_Column(string type, string name, Base_Column* referen
         this->reference = col;
     }
     else{
-        cout << "Failed dynamic cast in Foreign Column." << endl;
+        qDebug() << "Failed dynamic cast in Foreign Column.";
     }
 }
 
@@ -24,7 +24,7 @@ bool Foreign_Column<T>::validate(Base_Node* data){
         current = current->down;
     }
 
-    cout << "Value does not exist in column referenced by foreign key." << endl;
+    qDebug() << "Value does not exist in column referenced by foreign key.";
     return false;
 }
 

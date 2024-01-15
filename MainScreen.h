@@ -34,16 +34,14 @@ private slots:
 
 private:
     Ui::MainScreen *ui;
-    QPixmap backgroundPixmap;
+    QPixmap *backgroundPixmap;
     QWidget *mainWidget;
     QGridLayout *layoutDatabaseName;
     QPushButton *databaseName;
-    void writeDatabaseName(const QString& databaseName, const QString& userName);
     void displayDatabaseName();
     void paintEvent(QPaintEvent *event);
     int x, y;
     int count;
-    QScrollArea *scroll;
     CreateDatabase *obj;
     DatabaseLogIn *obj2;
 };

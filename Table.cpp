@@ -275,7 +275,6 @@ void Table::display() {
         }
         noNewLine << "\n";
     }
-    noNewLine << "leave";
 
 }
 

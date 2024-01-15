@@ -58,7 +58,6 @@ public:
     bool processQuery(vector<std::string> words);
     Table* getTable(string label);
 
-    //put in Dependencies.cpp later
     bool compareStrings(string s1, string s2);
     Base_Node* convert(string type, string value);
     tuple<string, string, string> parseFk(string s1);

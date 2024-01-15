@@ -33,6 +33,7 @@ DatabaseLogIn::DatabaseLogIn(QWidget *parent) :
 
 DatabaseLogIn::~DatabaseLogIn()
 {
+    delete obj;
     delete ui;
 }
 
@@ -51,8 +52,10 @@ bool DatabaseLogIn::verify(QString inputName, QString inputPass)
     databaseName = QString::fromStdString(text2);
 
     QFile file(databaseName + ".dat");
+
     QString userName;
     QString password;
+
     if(file.open(QIODevice::ReadOnly))
     {
         QDataStream in(&file);
@@ -63,7 +66,7 @@ bool DatabaseLogIn::verify(QString inputName, QString inputPass)
     }
     else
     {
-        qDebug() << "File not found";
+        qDebug() << databaseName << "File not found ";
     }
 
     if(inputName == userName && inputPass == password)
@@ -109,7 +112,6 @@ void DatabaseLogIn::on_pushButton_3_clicked()
             obj->show();
             bool value = 1;
             emit closeSignal(value);
-            qDebug() << "Access Granted";
 
         }
         else

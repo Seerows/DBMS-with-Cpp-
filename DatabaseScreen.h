@@ -11,6 +11,9 @@
 #include <QGridLayout>
 #include "displaytable.h"
 #include <QHBoxLayout>
+#include <QLabel>
+#include <QPixmap>
+#include <QPainter>
 
 namespace Ui {
 class DatabaseScreen;
@@ -29,13 +32,14 @@ public:
 
 private slots:
     void on_pushButton_clicked();
-
     void on_pushButton_exit_clicked();
+
 
 private:
     Ui::DatabaseScreen *ui;
-
+    QPixmap backgroundPixmap;
     void createTable(Table *obj);
+    void paintEvent(QPaintEvent *event);
     QPushButton *tableButton;
     int count;
     void displayTable(Table *obj);
@@ -45,6 +49,7 @@ private:
     void addTable(Table *obj);
     Database db;
     getWords g1;
+
 };
 
 #endif // DATABASESCREEN_H

@@ -14,7 +14,7 @@
    <string>Dialog</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-image: url(:/loginDatabaseScreen.jpg);</string>
+   <string notr="true">background-image: url(:/images/loginDatabaseScreen.jpg);</string>
   </property>
   <widget class="QLabel" name="label_Userid">
    <property name="geometry">
@@ -81,10 +81,14 @@ font: 900 12pt &quot;Segoe UI Black&quot;</string>
    </property>
    <property name="styleSheet">
     <string notr="true">color: grey;
-font: 900 20pt &quot;Segoe UI Black&quot;</string>
+font: 900 20pt &quot;Segoe UI Black&quot;;
+text-align: center;</string>
    </property>
    <property name="text">
     <string>TextLabel</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QLabel" name="label_error">

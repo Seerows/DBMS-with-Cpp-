@@ -43,7 +43,6 @@ CreateDatabase::CreateDatabase(QWidget *parent) :
 
 CreateDatabase::~CreateDatabase()
 {
-    qDebug() << "Destructor";
     delete ui;
 }
 
@@ -89,13 +88,26 @@ void CreateDatabase::on_buttonBox_accepted()
             if(ui->input_userPassword->text() == ui->input_userPassword_2->text())
             {
                 setVisible(false);
-                emit enteredDatabaseName(ui->input_databaseName->text(), ui->input_userName->text());
                 Database obj(QString(ui->input_databaseName->text()).toStdString(), QString(ui->input_userName->text()).toStdString(), QString(ui->input_userPassword->text()).toStdString());
                 obj.username = QString(ui->input_userName->text()).toStdString();
                 obj.password = QString(ui->input_userPassword->text()).toStdString();
-                qDebug() << obj.username;
-                qDebug() << obj.password;
                 obj.commit();
+
+                QFile file("userData.txt");
+
+                if(file.open(QIODevice::Append | QIODevice::Text))
+                {
+                    QTextStream out(&file);
+                    out << QString::fromStdString(obj.name) << "\n";
+                    out << QString::fromStdString(obj.username) << "\n";
+                    file.close();
+                }
+                else
+                {
+                    qDebug() << "Failed to append to the file.";
+                }
+
+                emit enteredDatabaseName(ui->input_databaseName->text(), ui->input_userName->text());
                 close();
             }
             else
@@ -117,7 +129,6 @@ void CreateDatabase::on_buttonBox_accepted()
     else
     {
         setVisible(true);
-        qDebug() << "IN else block";
         ui->label_error1->show();
         ui->label_error2->hide();
         ui->label_error3->hide();

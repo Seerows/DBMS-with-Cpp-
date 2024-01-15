@@ -1,9 +1,10 @@
 <RCC>
     <qresource prefix="/">
-        <file>icon.png</file>
-        <file>createDatabaseScreen.jpg</file>
-        <file>loginDatabaseScreen.jpg</file>
-        <file>DatabaseScreen.jpg</file>
-        <file>compileLogo.png</file>
+        <file>images/compileLogo.png</file>
+        <file>images/createDatabaseScreen.jpg</file>
+        <file>images/DatabaseScreen.jpg</file>
+        <file>images/icon.png</file>
+        <file>images/loginDatabaseScreen.jpg</file>
+        <file>images/MainScreen.jpeg</file>
     </qresource>
 </RCC>

@@ -27,10 +27,13 @@ void DisplayTable::addTableObject(Table *obj)
         {
             QTableWidgetItem *item = new QTableWidgetItem;
             item->setText(QString::fromStdString((*obj)[j][i].getValue()));
+            item->setTextAlignment(Qt::AlignCenter);
+            item->setBackground(QColor(50, 50, 50));
             item->setForeground(QColor(Qt::white));
             ui->tableWidget->setItem(i, j, item);
         }
     }
+    ui->tableWidget->verticalHeader()->hide();
 }
 
 DisplayTable::~DisplayTable()

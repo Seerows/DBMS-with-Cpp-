@@ -54,7 +54,6 @@ bool Queue<Base_Node*>::remove(Base_Node* data) {
         Base_Node* current = peek();
         deQueue();
         if (current == data) {
-            qDebug() << "found";
             found = true;
         }
         else {

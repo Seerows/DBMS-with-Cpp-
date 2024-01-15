@@ -14,7 +14,7 @@
    <string>Dialog</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-image: url(:/createDatabaseScreen.jpg);</string>
+   <string notr="true">background-image: url(:/images/createDatabaseScreen.jpg);</string>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
